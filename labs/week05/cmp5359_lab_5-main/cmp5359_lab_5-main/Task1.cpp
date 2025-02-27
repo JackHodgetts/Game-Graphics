@@ -82,6 +82,10 @@ void drawTriangle(std::vector<uint8_t>& image, int width, int height,
 			// HINT: Don't forget to re-normalise your norm afterwards!
 			Eigen::Vector3f worldP = Eigen::Vector3f::Zero();
 			Eigen::Vector3f normP = Eigen::Vector3f::Zero();
+
+			worldP = (t.verts[0] * b0) + (t.verts[1] * b1) + (t.verts[2] * b2);
+			normP = (t.norms[0] * b0) + (t.norms[1] * b1) + (t.norms[2] * b2);
+			normP = normP.normalized();
 			// *** END YOUR CODE ***
 
 			// Work out colour at this position.
@@ -97,6 +101,8 @@ void drawTriangle(std::vector<uint8_t>& image, int width, int height,
 				// Work out the intensity of this light source, at the point worldP.
 				Eigen::Vector3f lightIntensity = Eigen::Vector3f::Zero();
 
+				lightIntensity = light->getIntensityAt(worldP);
+
 				// We only need to do the following if the light isn't an ambient light.
 				if (light->getType() != Light::Type::AMBIENT) {
 
@@ -107,14 +113,24 @@ void drawTriangle(std::vector<uint8_t>& image, int width, int height,
 					// (i.e. use -direction, rather than direction).
 					float dotProd = 0.0f;
 
+					dotProd = normP.dot(-light->getDirection(worldP));
+
 					// We don't want negative light - if your dot product was less than 0, set it to 0.
 
+					if (dotProd < 0) {
+						dotProd = 0;
+					}
+
 					// Multiply the light intensity by the dot product.
+
+					lightIntensity = lightIntensity * dotProd;
 				}
 
 				// Now add the intensity times the albedo.
 				// You need to use a coefficient-wise multiply (not matrix multiply, dot product or cross product!)
 				// There's a handy coeffWiseMultiply function I've written for you in LinAlg.hpp for this.
+
+				color = color + coeffWiseMultiply(lightIntensity, albedo);
 
 				// *** END YOUR CODE ***
 			}
