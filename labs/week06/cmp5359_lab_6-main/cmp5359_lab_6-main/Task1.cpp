@@ -127,6 +127,9 @@ void drawTriangle(std::vector<uint8_t>& image, int width, int height,
 			if (zBuffer[depthIdx] > depth) {
 				zBuffer[depthIdx] = depth;
 			}
+			else {
+				return;
+			}
 
 			// *** END YOUR CODE ***
 
@@ -146,22 +149,28 @@ void drawTriangle(std::vector<uint8_t>& image, int width, int height,
 			// Convert this coordinate to a point in texture space
 			// To do so, multiply by the texWidth and texHeight to get to the correct range.
 			// Don't forget to flip the y coordinates! 
-			int texR = texP.x() * texWidth;
-			int texC = texP.y() * -texHeight;
+			int texR = texHeight - (texP.y() * texHeight);
+			int texC = texP.x() * texWidth;
 			// Handle the case where texR or texC end up outside the image!
 			// There are different ways you could do this - for example using 
 			// the modulo (%) operator to wrap around, or clamping to the edges.
 			// Write your own code below to do this - once you're done you should be sure 
 			// that 0 <= texC < texWidth and 0 <= texR < texHeight.
+			if (!(0 <= texC < texWidth && 0 <= texR < texHeight)) {
+				continue;
+			}
 
 			// Get the value from the texture (hint: use the getPixel function on the albedoTexture).
-			Color texColor{ 255,255,255,255 };
+			Color texColor = getPixel(albedoTexture, texR, texC, texWidth, texHeight);
 
 			// Convert it into an Eigen::Vector3f as an albedo
 			// (Optional bonus task, if you checked out the slides on gamma correction:
 			// gamma correct this colour, so the texture doesn't appear overly bright.
 			// should you raise to the power 1/2.2, or 2.2?)
-			Eigen::Vector3f albedo = Eigen::Vector3f::Zero();
+			Eigen::Vector3f albedo;
+			albedo.x() = texColor.r / 255.0f;
+			albedo.y() = texColor.g / 255.0f;
+			albedo.z() = texColor.b / 255.0f;
 
 			// *** END YOUR CODE ***
 
