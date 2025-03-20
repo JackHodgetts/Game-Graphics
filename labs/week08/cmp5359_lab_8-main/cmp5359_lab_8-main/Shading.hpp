@@ -57,7 +57,7 @@ float blinnPhongSpecularTerm(const Eigen::Vector3f& incomingLightDir, const Eige
 {
 	// *** YOUR CODE HERE ***
 	// Find the half-vector (average of view dir and light dir)
-	Eigen::Vector3f halfVec = ((incomingLightDir.normalized() + viewDir.normalized()) / 2).normalized();
+	Eigen::Vector3f halfVec = ((-incomingLightDir.normalized() + viewDir.normalized()) / 2).normalized();
 
 	// Find dot product of half-vector and normal.
 	float halfDotNorm = halfVec.dot(normal.normalized());

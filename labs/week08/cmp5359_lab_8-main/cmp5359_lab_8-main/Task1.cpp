@@ -126,7 +126,7 @@ void drawTriangle(std::vector<uint8_t>& image, int width, int height,
 					// Work out the view direction (from surface point towards camera). Make sure it's normalized!
 					Eigen::Vector3f viewDir = (camWorldPos - worldP).normalized();
 					// Find the specular term by calling phongSpecularTerm.
-					float specularTerm = blinnPhongSpecularTerm(incomingLightDir, normP, viewDir, 10);
+					float specularTerm = phongSpecularTerm(incomingLightDir, normP, viewDir, 10);
 					// *** END YOUR CODE ***
 
 					Eigen::Vector3f specularOut = specularColor * specularTerm;
