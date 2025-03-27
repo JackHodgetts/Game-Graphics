@@ -86,8 +86,31 @@ bool raySphereIntersection(const Ray& ray, const Sphere& sphere, Vector3f& inter
 	//   a. If such a t exists, set the value of "intersection" and "t" and return true.
 	//   b. If no such t exists, return false.
 
+	Vector3f v = ray.origin - sphere.centre;
+	float B = 2 * v.dot(ray.direction.normalized());
+	float C = pow(v.norm(), 2) - (sphere.radius * sphere.radius);
+
+	float discriminat = pow(B, 2) - (4 * C);
+
+	if (discriminat < 0) {
+		return false;
+	}
+
+
+	float t1 = (-B + sqrt(discriminat)) / 2;
+	float t2 = (-B - sqrt(discriminat)) / 2;
+
+	float tFinal = __min(t1, t2);
+	if (0 > tFinal || minT > tFinal) {
+		return false;
+	}
+
+	t = tFinal;
+	intersection = ray.origin + tFinal * ray.direction.normalized();
+
+
 	// Remove this existing code, that just always returns false.
-	return false;
+	return true;
 	// *** END YOUR CODE ***
 } 
 
@@ -99,7 +122,7 @@ Vector3f getSphereNormal(const Sphere& sphere, const Vector3f& location) {
 	// See the slides for more detail.
 	// 
 	// Remove this existing code that just returns 0.
-	return Vector3f::Zero();
+	return location - sphere.centre;
 	// *** END YOUR CODE ***
 }
 
@@ -220,9 +243,16 @@ Vector3f traceRay(const Ray& ray, const std::vector<Sphere>& spheres, const std:
 		// REMINDER: don't forget to increase the value of bounce by 1 when you call traceRay
 		// again recursively! This will make sure you don't exceed the maxBounces bounce count.
 
+		Vector3f relectionVector = ray.direction.normalized() + 2 * (fabsf(ray.direction.normalized().dot(getSphereNormal(*hitSphere, hitIntersection).normalized())) * getSphereNormal(*hitSphere, hitIntersection).normalized());
+
+		Ray relectionRay;
+		relectionRay.direction = relectionVector; 
+		relectionRay.origin = hitIntersection;
+		
+		return coeffWiseMultiply(traceRay(relectionRay, spheres, lights, bounce++), hitSphere->colour);
+
 		// This existing code throws an error as mirror spheres haven't been implemented yet.
 		// Remove it when you've implemented mirrors!
-		throw std::runtime_error("Mirror material not implemented!");
 		//*** END YOUR CODE
 	}
 	else if (hitSphere->material == Material::REFRACTIVE) {
@@ -265,6 +295,28 @@ Vector3f traceRay(const Ray& ray, const std::vector<Sphere>& spheres, const std:
 		//      b. Find the reflected direction, and make a reflected ray.
 		//      c. Trace the reflected ray. Again, make sure to use bounce+1!
 
+		float k = 1 - pow(eta, 2) * (1 - pow((ray.direction.dot(normal)), 2));
+
+		if (k > 0) {
+			Vector3f refractionVector = (eta * ray.direction) - normal * ((ray.direction.dot(normal)) + sqrt(k));
+			Ray refractionRay;
+			bounce++;
+			refractionRay.direction = refractionVector;
+			refractionRay.origin = hitIntersection;
+
+			return coeffWiseMultiply(traceRay(refractionRay, spheres, lights, bounce), hitSphere->colour);
+
+		}
+		else {
+			Vector3f relectionVector = ray.direction.normalized() + 2 * (fabsf(ray.direction.normalized().dot(getSphereNormal(*hitSphere, hitIntersection).normalized())) * getSphereNormal(*hitSphere, hitIntersection).normalized());
+
+			Ray relectionRay;
+			relectionRay.direction = relectionVector;
+			relectionRay.origin = hitIntersection;
+
+			return coeffWiseMultiply(traceRay(relectionRay, spheres, lights, bounce++), hitSphere->colour);
+		}
+
 		// *** END YOUR CODE ***
 	}
 }
@@ -300,9 +352,9 @@ int main()
 	spheres.push_back({ Vector3f(0.f, -2.f, 4.f), 0.5f, Material::DIFFUSE, Vector3f(0.2f, 0.2f, 0.8f) });
 	spheres.push_back({ Vector3f(0.f, 1.f, 6.f), 0.3f, Material::DIFFUSE, Vector3f(0.8f, 0.8f, 0.f) });
 	// Task 5: Add a mirror reflective sphere to your scene, and raytrace again!
-	//spheres.push_back({ Vector3f(2.f, 2.f, 4.f), 0.5f, Material::MIRROR, Vector3f(0.9f, 0.9f, 0.9f) });
+	spheres.push_back({ Vector3f(2.f, 2.f, 4.f), 0.5f, Material::MIRROR, Vector3f(0.9f, 0.9f, 0.9f) });
 	// Task 7: Add a refractive sphere to your scene, and raytrace again!
-	//spheres.push_back({ Vector3f(0.f, 0.f, 3.f), 0.5f, Material::REFRACTIVE, Vector3f(0.9f, 0.8f, 0.8f), 1.4f });
+	spheres.push_back({ Vector3f(0.f, 0.f, 3.f), 0.5f, Material::REFRACTIVE, Vector3f(0.9f, 0.8f, 0.8f), 1.4f });
 
 	Camera camera{
 		Vector3f(0.f, 0.f, 0.f), // position
