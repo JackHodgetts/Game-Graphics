@@ -124,13 +124,10 @@ void drawTriangle(std::vector<uint8_t>& image, int width, int height,
 			// If your depth is bigger than the current depth, skip drawing this pixel.
 			// Otherwise, replace the zBuffer value at depthIdx with this depth.
 			// ADD YOUR OWN CODE TO DO THIS HERE
-			if (zBuffer[depthIdx] > depth) {
-				zBuffer[depthIdx] = depth;
+			if (depth > zBuffer[depthIdx]) {
+				continue;
 			}
-			else {
-				return;
-			}
-
+			zBuffer[depthIdx] = depth;
 			// *** END YOUR CODE ***
 
 			Eigen::Vector3f normP = t.norms[0] * b0 + t.norms[1] * b1 + t.norms[2] * b2;
@@ -161,7 +158,7 @@ void drawTriangle(std::vector<uint8_t>& image, int width, int height,
 			}
 
 			// Get the value from the texture (hint: use the getPixel function on the albedoTexture).
-			Color texColor = getPixel(albedoTexture, texR, texC, texWidth, texHeight);
+			Color texColor = getPixel(albedoTexture, texC, texR, texWidth, texHeight);
 
 			// Convert it into an Eigen::Vector3f as an albedo
 			// (Optional bonus task, if you checked out the slides on gamma correction:
