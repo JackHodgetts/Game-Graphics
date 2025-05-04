@@ -213,8 +213,6 @@ void drawTriangle(std::vector<uint8_t>& image, int width, int height,
 		}
 }
 
-
-
 void drawMesh(std::vector<unsigned char>& image,
 	std::vector<float>& zBuffer,
 	const Mesh& mesh,
@@ -309,7 +307,7 @@ int main()
 {
 	std::string outputFilename = "output.png";
 
-	const int width = 512, height = 512;
+	const int width = 1920, height = 1080;
 	const int nChannels = 4;
 
 	// Setting up an image buffer
@@ -345,39 +343,128 @@ int main()
 	// Set up worldToClip, using the projection and worldToCamera matrices
 	Eigen::Matrix4f worldToClip = projection * worldToCamera;
 
+
 	// *** END YOUR CODE ***
 
 	std::string bunnyFilename = "../models/stanford_bunny_texmapped.obj";
+	std::string roadFilename = "../models/Road.obj";
+	std::string sideHillFilename = "../models/Newhill.obj";
 
 	std::vector<std::unique_ptr<Light>> lights;
 	// I've already added an ambient light for you!
 	lights.emplace_back(new AmbientLight(Eigen::Vector3f(0.1f, 0.1f, 0.1f)));
 
 	//lights.emplace_back(new PointLight(Eigen::Vector3f(1.1f, 1.1f, 1.1f), Eigen::Vector3f(0.f, 1.0f, 0.f)));
+	lights.emplace_back(new PointLight(Eigen::Vector3f(1.0f, 1.0f, 1.0f), Eigen::Vector3f(0.f, 0.f, 0.f)));
 	lights.emplace_back(new DirectionalLight(Eigen::Vector3f(0.4f, 0.4f, 0.4f), Eigen::Vector3f(1.f, 0.f, 0.0f)));
 	//lights.emplace_back(new SpotLight(Eigen::Vector3f(10.0f, 0.0f, 0.0f), Eigen::Vector3f(0.f, 1.f, 0.0f), Eigen::Vector3f(0, -1, 0), M_PI/8));
 
-	Mesh bunnyMesh = loadMeshFile(bunnyFilename);
+	Mesh bunnyMesh;
+	try {
+		bunnyMesh = loadMeshFile(bunnyFilename);
+		std::cout << "Successfully loaded model: " << bunnyFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << bunnyFilename << "\nReason: " << e.what() << std::endl;
+	}
 
+	Mesh roadMesh;
+	try {
+		roadMesh = loadMeshFile(roadFilename);
+		std::cout << "Successfully loaded model: " << roadFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << roadFilename << "\nReason: " << e.what() << std::endl;
+	}
+	Mesh sideHillMesh;
+	try {
+		sideHillMesh = loadMeshFile(sideHillFilename);
+		std::cout << "Successfully loaded model: " << sideHillFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << sideHillFilename << "\nReason: " << e.what() << std::endl;
+	}
 
 	Eigen::Matrix4f bunnyTransform;
+	Eigen::Matrix4f roadTransform;
+	Eigen::Matrix4f sideHillTransform;
 
 	std::vector<uint8_t> bunnyTexture;
 	unsigned int bunnyTexWidth, bunnyTexHeight;
 	lodepng::decode(bunnyTexture, bunnyTexWidth, bunnyTexHeight, "../models/stanford_bunny_albedo.png");
 
+	std::vector<uint8_t> roadTexture;
+	unsigned int roadTexWidth, roadTexHeight;
+	lodepng::decode(roadTexture, roadTexWidth, roadTexHeight, "../models/RoadTexture.png");
+
+	std::vector<uint8_t> sideHillTexture;
+	unsigned int sideHillTexWidth, sideHillTexHeight;
+	lodepng::decode(sideHillTexture, sideHillTexWidth, sideHillTexHeight, "../models/SideHillTexture.png");
+
 	bunnyTransform = translationMatrix(Eigen::Vector3f(-1.0f, -1.0f, 3.f)) * rotateYMatrix(M_PI);
 	drawMesh(imageBuffer, zBuffer, bunnyMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
-	bunnyTransform = translationMatrix(Eigen::Vector3f(-1.0f, -1.0f, 5.f)) * rotateYMatrix(M_PI);
-	drawMesh(imageBuffer, zBuffer, bunnyMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
-	bunnyTransform = translationMatrix(Eigen::Vector3f(-1.0f, -1.0f, 7.f)) * rotateYMatrix(M_PI);
-	drawMesh(imageBuffer, zBuffer, bunnyMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
-	bunnyTransform = translationMatrix(Eigen::Vector3f(1.0f, -1.0f, 3.f)) * rotateYMatrix(M_PI);
-	drawMesh(imageBuffer, zBuffer, bunnyMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
-	bunnyTransform = translationMatrix(Eigen::Vector3f(1.0f, -1.0f, 5.f)) * rotateYMatrix(M_PI);
-	drawMesh(imageBuffer, zBuffer, bunnyMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
-	bunnyTransform = translationMatrix(Eigen::Vector3f(1.0f, -1.0f, 7.f)) * rotateYMatrix(M_PI);
-	drawMesh(imageBuffer, zBuffer, bunnyMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
+
+	roadTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 0.f)) * rotateXMatrix(M_PI);
+	drawMesh(imageBuffer, zBuffer, roadMesh, roadTexture, roadTexWidth, roadTexHeight, roadTransform, worldToClip, lights, width, height);
+
+	sideHillTransform = translationMatrix(Eigen::Vector3f(1.0f, -1.0f, 3.f)) * rotateYMatrix(M_PI / 2);
+	drawMesh(imageBuffer, zBuffer, sideHillMesh, sideHillTexture, sideHillTexWidth, sideHillTexHeight, sideHillTransform, worldToClip, lights, width, height);
+
+	std::cout << "sideHillMesh has " << sideHillMesh.verts.size() << " vertices and " << sideHillMesh.vFaces.size() << " faces." << std::endl;
+
+	std::cout << "Bunny mesh loaded with " << bunnyMesh.verts.size() << " vertices and "
+		<< bunnyMesh.vFaces.size() << " faces." << std::endl;
+	std::cout << "Road mesh loaded with " << roadMesh.verts.size() << " vertices and "
+		<< roadMesh.vFaces.size() << " faces." << std::endl;
+	std::cout << "SideHill mesh loaded with " << sideHillMesh.verts.size() << " vertices and "
+		<< sideHillMesh.vFaces.size() << " faces." << std::endl;
+
+	for (const auto& vertex : bunnyMesh.verts) {
+		Eigen::Vector4f transformedVertex = bunnyTransform * Eigen::Vector4f(vertex.x(), vertex.y(), vertex.z(), 1.0f);
+		std::cout << "Bunny Vertex: " << transformedVertex.transpose() << std::endl;
+	}
+
+	for (const auto& vertex : roadMesh.verts) {
+		Eigen::Vector4f transformedVertex = bunnyTransform * Eigen::Vector4f(vertex.x(), vertex.y(), vertex.z(), 1.0f);
+		std::cout << "Road Vertex: " << transformedVertex.transpose() << std::endl;
+	}
+
+	for (const auto& vertex : sideHillMesh.verts) {
+		Eigen::Vector4f transformedVertex = bunnyTransform * Eigen::Vector4f(vertex.x(), vertex.y(), vertex.z(), 1.0f);
+		std::cout << "Hill Vertex: " << transformedVertex.transpose() << std::endl;
+	}
+
+	Eigen::Vector3f translation = sideHillTransform.block<3, 1>(0, 3); // Extract translation from last column
+
+	// Extract rotation and scale
+	Eigen::Matrix3f rotation = sideHillTransform.block<3, 3>(0, 0); // Extract rotation matrix (upper-left 3x3)
+	Eigen::Vector3f scale;
+	scale.x() = rotation.col(0).norm();  // Length of the first column vector
+	scale.y() = rotation.col(1).norm();  // Length of the second column vector
+	scale.z() = rotation.col(2).norm();  // Length of the third column vector
+
+	// Normalize the rotation matrix (to get the pure rotation part)
+	rotation.col(0).normalize();
+	rotation.col(1).normalize();
+	rotation.col(2).normalize();
+
+	// Print debug information
+	std::cout << "Mesh Debug Info: " << std::endl;
+	std::cout << "Translation (Location): " << translation.transpose() << std::endl;
+	std::cout << "Rotation (Matrix): \n" << rotation << std::endl;
+	std::cout << "Scale: " << scale.transpose() << std::endl;
+	std::cout << "Mesh will be drawn with these transformations." << std::endl;
+
+	//bunnyTransform = translationMatrix(Eigen::Vector3f(-1.0f, -1.0f, 5.f)) * rotateYMatrix(M_PI);
+	//drawMesh(imageBuffer, zBuffer, bunnyMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
+	//bunnyTransform = translationMatrix(Eigen::Vector3f(-1.0f, -1.0f, 7.f)) * rotateYMatrix(M_PI);
+	//drawMesh(imageBuffer, zBuffer, bunnyMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
+	//bunnyTransform = translationMatrix(Eigen::Vector3f(1.0f, -1.0f, 3.f)) * rotateYMatrix(M_PI);
+	//drawMesh(imageBuffer, zBuffer, bunnyMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
+	//bunnyTransform = translationMatrix(Eigen::Vector3f(1.0f, -1.0f, 5.f)) * rotateYMatrix(M_PI);
+	//drawMesh(imageBuffer, zBuffer, bunnyMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
+	//bunnyTransform = translationMatrix(Eigen::Vector3f(1.0f, -1.0f, 7.f)) * rotateYMatrix(M_PI);
+	//drawMesh(imageBuffer, zBuffer, bunnyMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
 
 	// For debug - draw point lights as colored circles so we can see where they are
 	drawPointLights(imageBuffer, width, height, lights);
