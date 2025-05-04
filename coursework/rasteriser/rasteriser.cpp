@@ -50,17 +50,25 @@ Eigen::Matrix4f projectionMatrix(int height, int width, float horzFov = 70.f * M
 void findScreenBoundingBox(const Triangle& t, int width, int height, int& minX, int& minY, int& maxX, int& maxY)
 {
 	// Find a bounding box around the triangle
+	int padding = 10; // Define how much to increase the bounding box
+
 	minX = std::min(std::min(t.screen[0].x(), t.screen[1].x()), t.screen[2].x());
 	minY = std::min(std::min(t.screen[0].y(), t.screen[1].y()), t.screen[2].y());
 	maxX = std::max(std::max(t.screen[0].x(), t.screen[1].x()), t.screen[2].x());
 	maxY = std::max(std::max(t.screen[0].y(), t.screen[1].y()), t.screen[2].y());
 
-	// Constrain it to lie within the image.
-	minX = std::min(std::max(minX, 0), width - 1);
-	maxX = std::min(std::max(maxX, 0), width - 1);
-	minY = std::min(std::max(minY, 0), height - 1);
-	maxY = std::min(std::max(maxY, 0), height - 1);
+	// Increase the size of the bounding box by the padding
+	minX -= padding;
+	maxX += padding;
+	minY -= padding;
+	maxY += padding;
+
+	minX = std::max(minX, 0);                
+	maxX = std::min(maxX, width - 1);        
+	minY = std::max(minY, 0);                
+	maxY = std::min(maxY, height - 1);       
 }
+
 
 
 void drawTriangle(std::vector<uint8_t>& image, int width, int height,
@@ -347,8 +355,9 @@ int main()
 	// *** END YOUR CODE ***
 
 	std::string bunnyFilename = "../models/stanford_bunny_texmapped.obj";
-	std::string roadFilename = "../models/Road.obj";
-	std::string sideHillFilename = "../models/Newhill.obj";
+	std::string roadFilename = "../models/Road/Road.obj";
+	std::string sideHillFilename = "../models/SideHill/SideHill.obj";
+	std::string CliffHillFilename = "../models/CliffHill/CliffHill.obj";
 
 	std::vector<std::unique_ptr<Light>> lights;
 	// I've already added an ambient light for you!
@@ -384,10 +393,20 @@ int main()
 	catch (const std::exception& e) {
 		std::cerr << "Failed to load model: " << sideHillFilename << "\nReason: " << e.what() << std::endl;
 	}
+	Mesh CliffHillMesh;
+	try {
+		CliffHillMesh = loadMeshFile(CliffHillFilename);
+		std::cout << "Successfully loaded model: " << CliffHillFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << CliffHillFilename << "\nReason: " << e.what() << std::endl;
+	}
+
 
 	Eigen::Matrix4f bunnyTransform;
 	Eigen::Matrix4f roadTransform;
 	Eigen::Matrix4f sideHillTransform;
+	Eigen::Matrix4f CliffHillTransform;
 
 	std::vector<uint8_t> bunnyTexture;
 	unsigned int bunnyTexWidth, bunnyTexHeight;
@@ -395,76 +414,37 @@ int main()
 
 	std::vector<uint8_t> roadTexture;
 	unsigned int roadTexWidth, roadTexHeight;
-	lodepng::decode(roadTexture, roadTexWidth, roadTexHeight, "../models/RoadTexture.png");
+	lodepng::decode(roadTexture, roadTexWidth, roadTexHeight, "../models/Road/RoadTexture.png");
 
 	std::vector<uint8_t> sideHillTexture;
 	unsigned int sideHillTexWidth, sideHillTexHeight;
-	lodepng::decode(sideHillTexture, sideHillTexWidth, sideHillTexHeight, "../models/SideHillTexture.png");
+	lodepng::decode(sideHillTexture, sideHillTexWidth, sideHillTexHeight, "../models/SideHill/SideHillTexture.png");
+
+	std::vector<uint8_t> CliffHillTexture;
+	unsigned int CliffHillTexWidth, CliffHillTexHeight;
+	lodepng::decode(CliffHillTexture, CliffHillTexWidth, CliffHillTexHeight, "../models/CliffHill/CliffHillTexture.png");
 
 	bunnyTransform = translationMatrix(Eigen::Vector3f(-1.0f, -1.0f, 3.f)) * rotateYMatrix(M_PI);
-	drawMesh(imageBuffer, zBuffer, bunnyMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
+	//drawMesh(imageBuffer, zBuffer, bunnyMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
 
-	roadTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 0.f)) * rotateXMatrix(M_PI);
+	roadTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 4.f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
 	drawMesh(imageBuffer, zBuffer, roadMesh, roadTexture, roadTexWidth, roadTexHeight, roadTransform, worldToClip, lights, width, height);
 
-	sideHillTransform = translationMatrix(Eigen::Vector3f(1.0f, -1.0f, 3.f)) * rotateYMatrix(M_PI / 2);
+	sideHillTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 4.f)) * scaleMatrix(0.3);
 	drawMesh(imageBuffer, zBuffer, sideHillMesh, sideHillTexture, sideHillTexWidth, sideHillTexHeight, sideHillTransform, worldToClip, lights, width, height);
 
+	CliffHillTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 4.f)) * rotateYMatrix(M_PI / 2) * scaleMatrix(0.1);
+	drawMesh(imageBuffer, zBuffer, CliffHillMesh, CliffHillTexture, CliffHillTexWidth, CliffHillTexHeight, CliffHillTransform, worldToClip, lights, width, height);
+
 	std::cout << "sideHillMesh has " << sideHillMesh.verts.size() << " vertices and " << sideHillMesh.vFaces.size() << " faces." << std::endl;
+	std::cout << "Bunny mesh loaded with " << bunnyMesh.verts.size() << " vertices and " << bunnyMesh.vFaces.size() << " faces." << std::endl;
+	std::cout << "Road mesh loaded with " << roadMesh.verts.size() << " vertices and " << roadMesh.vFaces.size() << " faces." << std::endl;
+	std::cout << "CliffHill mesh loaded with " << CliffHillMesh.verts.size() << " vertices and " << CliffHillMesh.vFaces.size() << " faces." << std::endl;
 
-	std::cout << "Bunny mesh loaded with " << bunnyMesh.verts.size() << " vertices and "
-		<< bunnyMesh.vFaces.size() << " faces." << std::endl;
-	std::cout << "Road mesh loaded with " << roadMesh.verts.size() << " vertices and "
-		<< roadMesh.vFaces.size() << " faces." << std::endl;
-	std::cout << "SideHill mesh loaded with " << sideHillMesh.verts.size() << " vertices and "
-		<< sideHillMesh.vFaces.size() << " faces." << std::endl;
-
-	for (const auto& vertex : bunnyMesh.verts) {
-		Eigen::Vector4f transformedVertex = bunnyTransform * Eigen::Vector4f(vertex.x(), vertex.y(), vertex.z(), 1.0f);
-		std::cout << "Bunny Vertex: " << transformedVertex.transpose() << std::endl;
-	}
-
-	for (const auto& vertex : roadMesh.verts) {
-		Eigen::Vector4f transformedVertex = bunnyTransform * Eigen::Vector4f(vertex.x(), vertex.y(), vertex.z(), 1.0f);
-		std::cout << "Road Vertex: " << transformedVertex.transpose() << std::endl;
-	}
-
-	for (const auto& vertex : sideHillMesh.verts) {
-		Eigen::Vector4f transformedVertex = bunnyTransform * Eigen::Vector4f(vertex.x(), vertex.y(), vertex.z(), 1.0f);
-		std::cout << "Hill Vertex: " << transformedVertex.transpose() << std::endl;
-	}
-
-	Eigen::Vector3f translation = sideHillTransform.block<3, 1>(0, 3); // Extract translation from last column
-
-	// Extract rotation and scale
-	Eigen::Matrix3f rotation = sideHillTransform.block<3, 3>(0, 0); // Extract rotation matrix (upper-left 3x3)
-	Eigen::Vector3f scale;
-	scale.x() = rotation.col(0).norm();  // Length of the first column vector
-	scale.y() = rotation.col(1).norm();  // Length of the second column vector
-	scale.z() = rotation.col(2).norm();  // Length of the third column vector
-
-	// Normalize the rotation matrix (to get the pure rotation part)
-	rotation.col(0).normalize();
-	rotation.col(1).normalize();
-	rotation.col(2).normalize();
-
-	// Print debug information
-	std::cout << "Mesh Debug Info: " << std::endl;
-	std::cout << "Translation (Location): " << translation.transpose() << std::endl;
-	std::cout << "Rotation (Matrix): \n" << rotation << std::endl;
-	std::cout << "Scale: " << scale.transpose() << std::endl;
-	std::cout << "Mesh will be drawn with these transformations." << std::endl;
-
-	//bunnyTransform = translationMatrix(Eigen::Vector3f(-1.0f, -1.0f, 5.f)) * rotateYMatrix(M_PI);
-	//drawMesh(imageBuffer, zBuffer, bunnyMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
-	//bunnyTransform = translationMatrix(Eigen::Vector3f(-1.0f, -1.0f, 7.f)) * rotateYMatrix(M_PI);
-	//drawMesh(imageBuffer, zBuffer, bunnyMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
-	//bunnyTransform = translationMatrix(Eigen::Vector3f(1.0f, -1.0f, 3.f)) * rotateYMatrix(M_PI);
-	//drawMesh(imageBuffer, zBuffer, bunnyMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
-	//bunnyTransform = translationMatrix(Eigen::Vector3f(1.0f, -1.0f, 5.f)) * rotateYMatrix(M_PI);
-	//drawMesh(imageBuffer, zBuffer, bunnyMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
-	//bunnyTransform = translationMatrix(Eigen::Vector3f(1.0f, -1.0f, 7.f)) * rotateYMatrix(M_PI);
-	//drawMesh(imageBuffer, zBuffer, bunnyMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
+	//for (const auto& vertex : CliffHillMesh.verts) {
+	//	Eigen::Vector4f transformedVertex = CliffHillTransform * Eigen::Vector4f(vertex.x(), vertex.y(), vertex.z(), 1.0f);
+	//	std::cout << "Transformed Vertex: " << transformedVertex.transpose() << std::endl;
+	//}
 
 	// For debug - draw point lights as colored circles so we can see where they are
 	drawPointLights(imageBuffer, width, height, lights);
