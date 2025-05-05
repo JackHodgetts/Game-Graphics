@@ -343,7 +343,7 @@ int main()
 
 	// This matrix rotates the camera, tilting it down, then translates it up to make it look down on the scene.
 	// Once your code is working, try changing this to move the camera around!
-	Eigen::Matrix4f cameraToWorld = translationMatrix(Eigen::Vector3f(0.f, 0.8f, 0.f)) * rotateXMatrix(0.4f);
+	Eigen::Matrix4f cameraToWorld = translationMatrix(Eigen::Vector3f(0.f, 0.8f, 0.f)) * rotateXMatrix(0.4);
 
 	// The main important task = set up the worldToCamera and worldToClip matrices here!
 	// Set up worldToCamera, based on cameraToWorld above
@@ -355,7 +355,7 @@ int main()
 	// *** END YOUR CODE ***
 
 	std::string bunnyFilename = "../models/stanford_bunny_texmapped.obj";
-	std::string roadFilename = "../models/Road/Road3.obj";
+	std::string roadFilename = "../models/Road/Road2.obj";
 	std::string sideHillFilename = "../models/SideHill/SideHill2.obj";
 	std::string CliffHillFilename = "../models/CliffHill/CliffHill2.obj";
 	std::string GroundLeavesFilename = "../models/FloorLeaves/FloorLeaves2.obj";
@@ -440,20 +440,20 @@ int main()
 	bunnyTransform = translationMatrix(Eigen::Vector3f(-1.0f, -1.0f, 3.f)) * rotateYMatrix(M_PI);
 	//drawMesh(imageBuffer, zBuffer, bunnyMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
 
-	roadTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.f, 3.0f)) * rotateXMatrix(M_PI);
+	roadTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.f, 3.0f));
 	drawMesh(imageBuffer, zBuffer, roadMesh, roadTexture, roadTexWidth, roadTexHeight, roadTransform, worldToClip, lights, width, height);
 
-	sideHillTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
-	drawMesh(imageBuffer, zBuffer, sideHillMesh, sideHillTexture, sideHillTexWidth, sideHillTexHeight, sideHillTransform, worldToClip, lights, width, height);
+	//sideHillTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	//drawMesh(imageBuffer, zBuffer, sideHillMesh, sideHillTexture, sideHillTexWidth, sideHillTexHeight, sideHillTransform, worldToClip, lights, width, height);
 
-	CliffHillTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
-	drawMesh(imageBuffer, zBuffer, CliffHillMesh, CliffHillTexture, CliffHillTexWidth, CliffHillTexHeight, CliffHillTransform, worldToClip, lights, width, height);
+	//CliffHillTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	//drawMesh(imageBuffer, zBuffer, CliffHillMesh, CliffHillTexture, CliffHillTexWidth, CliffHillTexHeight, CliffHillTransform, worldToClip, lights, width, height);
 
-	GroundLeavesTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
-	drawMesh(imageBuffer, zBuffer, GroundLeavesMesh, GroundLeavesTexture, GroundLeavesTexWidth, GroundLeavesTexHeight, GroundLeavesTransform, worldToClip, lights, width, height);
+	//GroundLeavesTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	//drawMesh(imageBuffer, zBuffer, GroundLeavesMesh, GroundLeavesTexture, GroundLeavesTexWidth, GroundLeavesTexHeight, GroundLeavesTransform, worldToClip, lights, width, height);
 
-	//std::string AutumnTreesFilename = "../models/AutumnTrees/AutumnTrees.obj";
-	//Mesh AutumnTreesMesh;
+	////std::string AutumnTreesFilename = "../models/AutumnTrees/AutumnTrees.obj";
+	////Mesh AutumnTreesMesh;
 	//try {
 	//	AutumnTreesMesh = loadMeshFile(AutumnTreesFilename);
 	//	std::cout << "Successfully loaded model: " << AutumnTreesFilename << std::endl;
