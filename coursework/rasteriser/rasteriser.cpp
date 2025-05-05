@@ -358,6 +358,7 @@ int main()
 	std::string roadFilename = "../models/Road/Road.obj";
 	std::string sideHillFilename = "../models/SideHill/SideHill.obj";
 	std::string CliffHillFilename = "../models/CliffHill/CliffHill.obj";
+	std::string GroundLeavesFilename = "../models/FloorLeaves/FloorLeaves.obj";
 
 	std::vector<std::unique_ptr<Light>> lights;
 	// I've already added an ambient light for you!
@@ -401,12 +402,20 @@ int main()
 	catch (const std::exception& e) {
 		std::cerr << "Failed to load model: " << CliffHillFilename << "\nReason: " << e.what() << std::endl;
 	}
-
+	Mesh GroundLeavesMesh;
+	try {
+		GroundLeavesMesh = loadMeshFile(GroundLeavesFilename);
+		std::cout << "Successfully loaded model: " << GroundLeavesFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << GroundLeavesFilename << "\nReason: " << e.what() << std::endl;
+	}
 
 	Eigen::Matrix4f bunnyTransform;
 	Eigen::Matrix4f roadTransform;
 	Eigen::Matrix4f sideHillTransform;
 	Eigen::Matrix4f CliffHillTransform;
+	Eigen::Matrix4f GroundLeavesTransform;
 
 	std::vector<uint8_t> bunnyTexture;
 	unsigned int bunnyTexWidth, bunnyTexHeight;
@@ -424,17 +433,24 @@ int main()
 	unsigned int CliffHillTexWidth, CliffHillTexHeight;
 	lodepng::decode(CliffHillTexture, CliffHillTexWidth, CliffHillTexHeight, "../models/CliffHill/CliffHillTexture.png");
 
+	std::vector<uint8_t> GroundLeavesTexture;
+	unsigned int GroundLeavesTexWidth, GroundLeavesTexHeight;
+	lodepng::decode(GroundLeavesTexture, GroundLeavesTexWidth, GroundLeavesTexHeight, "../models/FloorLeaves/FloorLeaves.png");
+
 	bunnyTransform = translationMatrix(Eigen::Vector3f(-1.0f, -1.0f, 3.f)) * rotateYMatrix(M_PI);
 	//drawMesh(imageBuffer, zBuffer, bunnyMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
 
-	roadTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 4.f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
+	roadTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
 	drawMesh(imageBuffer, zBuffer, roadMesh, roadTexture, roadTexWidth, roadTexHeight, roadTransform, worldToClip, lights, width, height);
 
-	sideHillTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 4.f)) * scaleMatrix(0.3);
+	sideHillTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.7f)) * scaleMatrix(0.3);
 	drawMesh(imageBuffer, zBuffer, sideHillMesh, sideHillTexture, sideHillTexWidth, sideHillTexHeight, sideHillTransform, worldToClip, lights, width, height);
 
-	CliffHillTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 4.f)) * rotateYMatrix(M_PI / 2) * scaleMatrix(0.1);
+	CliffHillTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f))* scaleMatrix(0.3);
 	drawMesh(imageBuffer, zBuffer, CliffHillMesh, CliffHillTexture, CliffHillTexWidth, CliffHillTexHeight, CliffHillTransform, worldToClip, lights, width, height);
+
+	//GroundLeavesTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * scaleMatrix(0.3);
+	//drawMesh(imageBuffer, zBuffer, GroundLeavesMesh, GroundLeavesTexture, GroundLeavesTexWidth, GroundLeavesTexHeight, GroundLeavesTransform, worldToClip, lights, width, height);
 
 	std::cout << "sideHillMesh has " << sideHillMesh.verts.size() << " vertices and " << sideHillMesh.vFaces.size() << " faces." << std::endl;
 	std::cout << "Bunny mesh loaded with " << bunnyMesh.verts.size() << " vertices and " << bunnyMesh.vFaces.size() << " faces." << std::endl;
