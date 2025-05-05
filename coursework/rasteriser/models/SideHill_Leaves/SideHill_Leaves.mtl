@@ -1,7 +1,7 @@
-# Blender 4.1.0 MTL File: 'None'
+# Blender 4.1.0 MTL File: 'OBJ_Scene.blend'
 # www.blender.org
 
-newmtl leaves
+newmtl leaves.001
 Ns 200.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
@@ -11,7 +11,7 @@ illum 2
 map_Kd C:/Users/jacky/Downloads/autumn-leaves/source/leaves/Autumn Leaves.png
 map_d C:/Users/jacky/Downloads/autumn-leaves/source/leaves/Autumn Leaves.png
 
-newmtl leaves1
+newmtl leaves1.001
 Ns 200.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
@@ -21,7 +21,7 @@ illum 2
 map_Kd C:/Users/jacky/Downloads/autumn-leaves/source/leaves/Autumn Leaves.png
 map_d C:/Users/jacky/Downloads/autumn-leaves/source/leaves/Autumn Leaves.png
 
-newmtl leaves10
+newmtl leaves10.001
 Ns 200.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
@@ -31,7 +31,7 @@ illum 2
 map_Kd C:/Users/jacky/Downloads/autumn-leaves/source/leaves/Autumn Leaves.png
 map_d C:/Users/jacky/Downloads/autumn-leaves/source/leaves/Autumn Leaves.png
 
-newmtl leaves3
+newmtl leaves3.001
 Ns 200.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
@@ -41,7 +41,7 @@ illum 2
 map_Kd C:/Users/jacky/Downloads/autumn-leaves/source/leaves/Autumn Leaves.png
 map_d C:/Users/jacky/Downloads/autumn-leaves/source/leaves/Autumn Leaves.png
 
-newmtl leaves4
+newmtl leaves4.001
 Ns 200.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
@@ -51,7 +51,7 @@ illum 2
 map_Kd C:/Users/jacky/Downloads/autumn-leaves/source/leaves/Autumn Leaves.png
 map_d C:/Users/jacky/Downloads/autumn-leaves/source/leaves/Autumn Leaves.png
 
-newmtl leaves5
+newmtl leaves5.001
 Ns 200.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
@@ -61,7 +61,7 @@ illum 2
 map_Kd C:/Users/jacky/Downloads/autumn-leaves/source/leaves/Autumn Leaves.png
 map_d C:/Users/jacky/Downloads/autumn-leaves/source/leaves/Autumn Leaves.png
 
-newmtl leaves6
+newmtl leaves6.001
 Ns 200.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
@@ -71,7 +71,7 @@ illum 2
 map_Kd C:/Users/jacky/Downloads/autumn-leaves/source/leaves/Autumn Leaves.png
 map_d C:/Users/jacky/Downloads/autumn-leaves/source/leaves/Autumn Leaves.png
 
-newmtl leaves7
+newmtl leaves7.001
 Ns 200.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
@@ -81,7 +81,7 @@ illum 2
 map_Kd C:/Users/jacky/Downloads/autumn-leaves/source/leaves/Autumn Leaves.png
 map_d C:/Users/jacky/Downloads/autumn-leaves/source/leaves/Autumn Leaves.png
 
-newmtl leaves8
+newmtl leaves8.001
 Ns 200.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
@@ -91,7 +91,7 @@ illum 2
 map_Kd C:/Users/jacky/Downloads/autumn-leaves/source/leaves/Autumn Leaves.png
 map_d C:/Users/jacky/Downloads/autumn-leaves/source/leaves/Autumn Leaves.png
 
-newmtl leaves9
+newmtl leaves9.001
 Ns 200.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000

@@ -12,12 +12,13 @@ illum 2
 map_Kd D:/GameGraphics/Texture/depositphotos_144164755-stock-photo-old-nature-gray-brown-yellow.jpg
 map_Bump -bm 1.000000 C:/$Recycle.Bin/S-1-5-21-699003856-906272100-3160771722-1002/$RRSJT5K/textures/Bark_normal.png
 
-newmtl Material.008
+newmtl Leaves.001
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
+Ks 0.038857 0.038857 0.038857
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 illum 2
-map_Kd D:/GameGraphics/realistic-tree-2-free/textures/New_Leaf_11_2.png
-map_d D:/GameGraphics/realistic-tree-2-free/textures/New_Leaf_11_2.png
+map_Kd D:/GameGraphics/Texture/Leaf.png
+map_d D:/GameGraphics/Texture/Leaf.png
+map_Bump -bm 1.000000 C:/Users/jacky/Downloads/low_poly_tree_scene_free/textures/Leaves_normal.png
