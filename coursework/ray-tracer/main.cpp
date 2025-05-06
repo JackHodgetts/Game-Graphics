@@ -13,6 +13,7 @@
 #include "DirectionalLight.hpp"
 #include "LambertianShader.hpp"
 #include "TexturedLambertianShader.hpp"
+#include "TexturedPhongShader.hpp"
 #include "PhongShader.hpp"
 #include "MirrorShader.hpp"
 #include "TexCoordTestShader.hpp"
@@ -72,7 +73,7 @@ int main(int argc, char* argv[]) {
 	PhongShader bluePlasticShader(blue, Eigen::Vector3f(1.f, 1.f, 1.f), 100.f);
 	LambertianShader aquaLambertianShader(aqua);
 	LambertianShader lavenderLambertianShader(lavender);
-	TexturedLambertianShader spotShader(&spotTexture, width, height);
+	TexturedPhongShader spotShader(&spotTexture, width, height, 100, Eigen::Vector3f(1.f, 1.f, 1.f));
 	MirrorShader mirrorShader;
 	TexCoordTestShader texCoordTestShader;
 
