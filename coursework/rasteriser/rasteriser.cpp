@@ -347,7 +347,7 @@ int main()
 
 	// This matrix rotates the camera, tilting it down, then translates it up to make it look down on the scene.
 	// Once your code is working, try changing this to move the camera around!
-	Eigen::Matrix4f cameraToWorld = translationMatrix(Eigen::Vector3f(0.0f, 0.8f, 0.5f)) * rotateXMatrix(0.2);
+	Eigen::Matrix4f cameraToWorld = translationMatrix(Eigen::Vector3f(0.0f, 0.5f, 1.3f)) * rotateXMatrix(0.4);
 
 	// The main important task = set up the worldToCamera and worldToClip matrices here!
 	// Set up worldToCamera, based on cameraToWorld above
@@ -491,21 +491,21 @@ int main()
 	BackgroundHillTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.f, 3.0f));
 	drawMesh(imageBuffer, zBuffer, BackgroundHillMesh, BackgroundHillTexture, BackgroundHillTexWidth, BackgroundHillTexHeight, BackgroundHillTransform, worldToClip, lights, width, height);
 
-	/*std::string BackgroundLeavesFilename = "../models/BackgroundLeaves/BackgroundLeaves.obj";*/
-	//Mesh BackgroundLeavesMesh;
-	//try {
-	//	BackgroundLeavesMesh = loadMeshFile(BackgroundLeavesFilename);
-	//	std::cout << "Successfully loaded model: " << BackgroundLeavesFilename << std::endl;
-	//}
-	//catch (const std::exception& e) {
-	//	std::cerr << "Failed to load model: " << BackgroundLeavesFilename << "\nReason: " << e.what() << std::endl;
-	//}
-	//Eigen::Matrix4f BackgroundLeavesTransform;
-	//std::vector<uint8_t> BackgroundLeavesTexture;
-	//unsigned int BackgroundLeavesTexWidth, BackgroundLeavesTexHeight;
-	//lodepng::decode(BackgroundLeavesTexture, BackgroundLeavesTexWidth, BackgroundLeavesTexHeight, "../models/BackgroundLeaves/BackgroundLeavesTexture.png");
-	//BackgroundLeavesTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
-	//drawMesh(imageBuffer, zBuffer, BackgroundLeavesMesh, BackgroundLeavesTexture, BackgroundLeavesTexWidth, BackgroundLeavesTexHeight, BackgroundLeavesTransform, worldToClip, lights, width, height);
+	std::string BackgroundLeavesFilename = "../models/BackgroundLeaves/BackgroundLeaves.obj";
+	Mesh BackgroundLeavesMesh;
+	try {
+		BackgroundLeavesMesh = loadMeshFile(BackgroundLeavesFilename);
+		std::cout << "Successfully loaded model: " << BackgroundLeavesFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << BackgroundLeavesFilename << "\nReason: " << e.what() << std::endl;
+	}
+	Eigen::Matrix4f BackgroundLeavesTransform;
+	std::vector<uint8_t> BackgroundLeavesTexture;
+	unsigned int BackgroundLeavesTexWidth, BackgroundLeavesTexHeight;
+	lodepng::decode(BackgroundLeavesTexture, BackgroundLeavesTexWidth, BackgroundLeavesTexHeight, "../models/BackgroundLeaves/BackgroundLeavesTexture.png");
+	BackgroundLeavesTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, BackgroundLeavesMesh, BackgroundLeavesTexture, BackgroundLeavesTexWidth, BackgroundLeavesTexHeight, BackgroundLeavesTransform, worldToClip, lights, width, height);
 
 	std::string BackgroundPostFilename = "../models/BackgroundPost/BackgroundPost.obj";
 
@@ -627,7 +627,7 @@ int main()
 	CliffRocksTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
 	drawMesh(imageBuffer, zBuffer, CliffRocksMesh, CliffRocksTexture, CliffRocksTexWidth, CliffRocksTexHeight, CliffRocksTransform, worldToClip, lights, width, height);
 
-	std::string FloorLeavesFilename = "../models/FloorLeaves/FloorLeaves.obj";
+	std::string FloorLeavesFilename = "../models/FloorLeaves/FloorLeaves2.obj";
 
 	Mesh FloorLeavesMesh;
 	try {
@@ -767,6 +767,26 @@ int main()
 	SignLegsTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
 	drawMesh(imageBuffer, zBuffer, SignLegsMesh, SignLegsTexture, SignLegsTexWidth, SignLegsTexHeight, SignLegsTransform, worldToClip, lights, width, height);
 
+	//std::string FlooringFilename = "../models/Flooring/Flooring.obj";
+
+	//Mesh FlooringMesh;
+	//try {
+	//	FlooringMesh = loadMeshFile(FlooringFilename);
+	//	std::cout << "Successfully loaded model: " << FlooringFilename << std::endl;
+	//}
+	//catch (const std::exception& e) {
+	//	std::cerr << "Failed to load model: " << FlooringFilename << "\nReason: " << e.what() << std::endl;
+	//}
+
+	//Eigen::Matrix4f FlooringTransform;
+
+	//std::vector<uint8_t> FlooringTexture;
+	//unsigned int FlooringTexWidth, FlooringTexHeight;
+	//lodepng::decode(FlooringTexture, FlooringTexWidth, FlooringTexHeight, "../models/Flooring/Flooring.png");
+
+	//FlooringTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.4f, 3.0f));
+	//drawMesh(imageBuffer, zBuffer, FlooringMesh, FlooringTexture, FlooringTexWidth, FlooringTexHeight, FlooringTransform, worldToClip, lights, width, height);
+
 	//std::string SmokeFilename = "../models/Smoke/Smoke.obj";
 
 	//Mesh SmokeMesh;
@@ -787,10 +807,10 @@ int main()
 	//SmokeTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
 	//drawMesh(imageBuffer, zBuffer, SmokeMesh, SmokeTexture, SmokeTexWidth, SmokeTexHeight, SmokeTransform, worldToClip, lights, width, height);
 
-	for (const auto& vertex : BackgroundPostMesh.verts) {
-		Eigen::Vector4f transformedVertex = BackgroundPostTransform * Eigen::Vector4f(vertex.x(), vertex.y(), vertex.z(), 1.0f);
-		std::cout << "Transformed Vertex: " << transformedVertex.transpose() << std::endl;
-	}
+	//for (const auto& vertex : roadMesh.verts) {
+	//	Eigen::Vector4f transformedVertex = roadTransform * Eigen::Vector4f(vertex.x(), vertex.y(), vertex.z(), 1.0f);
+	//	std::cout << "Transformed Vertex: " << transformedVertex.transpose() << std::endl;
+	//}
 
 	// For debug - draw point lights as colored circles so we can see where they are
 	drawPointLights(imageBuffer, width, height, lights);
