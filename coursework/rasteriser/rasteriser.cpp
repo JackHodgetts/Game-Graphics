@@ -168,6 +168,10 @@ void drawTriangle(std::vector<uint8_t>& image, int width, int height,
 			// Get the value from the texture (hint: use the getPixel function on the albedoTexture).
 			Color texColor = getPixel(albedoTexture, texC, texR, texWidth, texHeight);
 
+			if (texColor.a = 0) {
+				continue;
+			}
+
 			// Convert it into an Eigen::Vector3f as an albedo
 			// (Optional bonus task, if you checked out the slides on gamma correction:
 			// gamma correct this colour, so the texture doesn't appear overly bright.
@@ -343,7 +347,7 @@ int main()
 
 	// This matrix rotates the camera, tilting it down, then translates it up to make it look down on the scene.
 	// Once your code is working, try changing this to move the camera around!
-	Eigen::Matrix4f cameraToWorld = translationMatrix(Eigen::Vector3f(0.2f, 0.5f, 1.5f)) * rotateXMatrix(0.2f) * rotateYMatrix(-0.2);
+	Eigen::Matrix4f cameraToWorld = translationMatrix(Eigen::Vector3f(0.0f, 0.8f, 0.5f)) * rotateXMatrix(0.2);
 
 	// The main important task = set up the worldToCamera and worldToClip matrices here!
 	// Set up worldToCamera, based on cameraToWorld above
@@ -355,10 +359,10 @@ int main()
 	// *** END YOUR CODE ***
 
 	std::string bunnyFilename = "../models/stanford_bunny_texmapped.obj";
-	std::string roadFilename = "../models/Road/Road2.obj";
-	std::string sideHillFilename = "../models/SideHill/SideHill2.obj";
-	std::string CliffHillFilename = "../models/CliffHill/CliffHill2.obj";
-	std::string GroundLeavesFilename = "../models/FloorLeaves/FloorLeaves2.obj";
+	std::string roadFilename = "../models/Road/Road.obj";
+	std::string sideHillFilename = "../models/SideHill/SideHill.obj";
+	std::string CliffHillFilename = "../models/CliffHill/CliffHill.obj";
+	std::string GroundLeavesFilename = "../models/FloorLeaves/FloorLeaves.obj";
 
 	std::vector<std::unique_ptr<Light>> lights;
 	// I've already added an ambient light for you!
@@ -402,20 +406,11 @@ int main()
 	catch (const std::exception& e) {
 		std::cerr << "Failed to load model: " << CliffHillFilename << "\nReason: " << e.what() << std::endl;
 	}
-	Mesh GroundLeavesMesh;
-	try {
-		GroundLeavesMesh = loadMeshFile(GroundLeavesFilename);
-		std::cout << "Successfully loaded model: " << GroundLeavesFilename << std::endl;
-	}
-	catch (const std::exception& e) {
-		std::cerr << "Failed to load model: " << GroundLeavesFilename << "\nReason: " << e.what() << std::endl;
-	}
 
 	Eigen::Matrix4f bunnyTransform;
 	Eigen::Matrix4f roadTransform;
 	Eigen::Matrix4f sideHillTransform;
 	Eigen::Matrix4f CliffHillTransform;
-	Eigen::Matrix4f GroundLeavesTransform;
 
 	std::vector<uint8_t> bunnyTexture;
 	unsigned int bunnyTexWidth, bunnyTexHeight;
@@ -433,58 +428,70 @@ int main()
 	unsigned int CliffHillTexWidth, CliffHillTexHeight;
 	lodepng::decode(CliffHillTexture, CliffHillTexWidth, CliffHillTexHeight, "../models/CliffHill/CliffHillTexture.png");
 
-	std::vector<uint8_t> GroundLeavesTexture;
-	unsigned int GroundLeavesTexWidth, GroundLeavesTexHeight;
-	lodepng::decode(GroundLeavesTexture, GroundLeavesTexWidth, GroundLeavesTexHeight, "../models/FloorLeaves/FloorLeaves.png");
-
 	bunnyTransform = translationMatrix(Eigen::Vector3f(-1.0f, -1.0f, 3.f)) * rotateYMatrix(M_PI);
 	//drawMesh(imageBuffer, zBuffer, bunnyMesh, bunnyTexture, bunnyTexWidth, bunnyTexHeight, bunnyTransform, worldToClip, lights, width, height);
 
-	roadTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.f, 3.0f)) * rotateXMatrix(M_PI);
+	roadTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.f, 3.0f));
 	drawMesh(imageBuffer, zBuffer, roadMesh, roadTexture, roadTexWidth, roadTexHeight, roadTransform, worldToClip, lights, width, height);
 
-	sideHillTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	sideHillTransform = translationMatrix(Eigen::Vector3f(0.01f, 0.f, 3.0f));
 	drawMesh(imageBuffer, zBuffer, sideHillMesh, sideHillTexture, sideHillTexWidth, sideHillTexHeight, sideHillTransform, worldToClip, lights, width, height);
 
-	CliffHillTransform = translationMatrix(Eigen::Vector3f(-0.05f, 0.05f, 2.7f)) * rotateYMatrix(0.8f);
+	CliffHillTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.f, 3.0f));
 	drawMesh(imageBuffer, zBuffer, CliffHillMesh, CliffHillTexture, CliffHillTexWidth, CliffHillTexHeight, CliffHillTransform, worldToClip, lights, width, height);
 
 	//GroundLeavesTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
 	//drawMesh(imageBuffer, zBuffer, GroundLeavesMesh, GroundLeavesTexture, GroundLeavesTexWidth, GroundLeavesTexHeight, GroundLeavesTransform, worldToClip, lights, width, height);
 
-	////std::string AutumnTreesFilename = "../models/AutumnTrees/AutumnTrees.obj";
-	////Mesh AutumnTreesMesh;
-	//try {
-	//	AutumnTreesMesh = loadMeshFile(AutumnTreesFilename);
-	//	std::cout << "Successfully loaded model: " << AutumnTreesFilename << std::endl;
-	//}
-	//catch (const std::exception& e) {
-	//	std::cerr << "Failed to load model: " << AutumnTreesFilename << "\nReason: " << e.what() << std::endl;
-	//}
-	//Eigen::Matrix4f AutumnTreesTransform;
-	//std::vector<uint8_t> AutumnTreesTexture;
-	//unsigned int AutumnTreesTexWidth, AutumnTreesTexHeight;
-	//lodepng::decode(AutumnTreesTexture, AutumnTreesTexWidth, AutumnTreesTexHeight, "../models/AutumnTrees/AutumnTreesTexture.png");
-	//AutumnTreesTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
-	//drawMesh(imageBuffer, zBuffer, AutumnTreesMesh, AutumnTreesTexture, AutumnTreesTexWidth, AutumnTreesTexHeight, AutumnTreesTransform, worldToClip, lights, width, height);
+	std::string AutumnTreesFilename = "../models/AutumnTrees/AutumnTrees.obj";
+	Mesh AutumnTreesMesh;
+	try {
+		AutumnTreesMesh = loadMeshFile(AutumnTreesFilename);
+		std::cout << "Successfully loaded model: " << AutumnTreesFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << AutumnTreesFilename << "\nReason: " << e.what() << std::endl;
+	}
+	Eigen::Matrix4f AutumnTreesTransform;
+	std::vector<uint8_t> AutumnTreesTexture;
+	unsigned int AutumnTreesTexWidth, AutumnTreesTexHeight;
+	lodepng::decode(AutumnTreesTexture, AutumnTreesTexWidth, AutumnTreesTexHeight, "../models/AutumnTrees/AutumnTreesTexture.png");
+	AutumnTreesTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, AutumnTreesMesh, AutumnTreesTexture, AutumnTreesTexWidth, AutumnTreesTexHeight, AutumnTreesTransform, worldToClip, lights, width, height);
 
-	//std::string BackgroundHillFilename = "../models/BackgroundHill/BackgroundHill.obj";
-	//Mesh BackgroundHillMesh;
-	//try {
-	//	BackgroundHillMesh = loadMeshFile(BackgroundHillFilename);
-	//	std::cout << "Successfully loaded model: " << BackgroundHillFilename << std::endl;
-	//}
-	//catch (const std::exception& e) {
-	//	std::cerr << "Failed to load model: " << BackgroundHillFilename << "\nReason: " << e.what() << std::endl;
-	//}
-	//Eigen::Matrix4f BackgroundHillTransform;
-	//std::vector<uint8_t> BackgroundHillTexture;
-	//unsigned int BackgroundHillTexWidth, BackgroundHillTexHeight;
-	//lodepng::decode(BackgroundHillTexture, BackgroundHillTexWidth, BackgroundHillTexHeight, "../models/BackgroundHill/BackgroundHillTexture.png");
-	//BackgroundHillTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
-	//drawMesh(imageBuffer, zBuffer, BackgroundHillMesh, BackgroundHillTexture, BackgroundHillTexWidth, BackgroundHillTexHeight, BackgroundHillTransform, worldToClip, lights, width, height);
+	/*std::string AutumnLeavesFilename = "../models/AutumnLeaves/AutumnLeaves.obj";
+	Mesh AutumnLeavesMesh;
+	try {
+		AutumnLeavesMesh = loadMeshFile(AutumnLeavesFilename);
+		std::cout << "Successfully loaded model: " << AutumnLeavesFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << AutumnLeavesFilename << "\nReason: " << e.what() << std::endl;
+	}
+	Eigen::Matrix4f AutumnLeavesTransform;
+	std::vector<uint8_t> AutumnLeavesTexture;
+	unsigned int AutumnLeavesTexWidth, AutumnLeavesTexHeight;
+	lodepng::decode(AutumnLeavesTexture, AutumnLeavesTexWidth, AutumnLeavesTexHeight, "../models/AutumnLeaves/AutumnLeavesTexture.png");
+	AutumnTreesTransform = translationMatrix(Eigen::Vector3f(1.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, AutumnLeavesMesh, AutumnLeavesTexture, AutumnLeavesTexWidth, AutumnLeavesTexHeight, AutumnLeavesTransform, worldToClip, lights, width, height);*/
 
-	//std::string BackgroundLeavesFilename = "../models/BackgroundLeaves/BackgroundLeaves.obj";
+	std::string BackgroundHillFilename = "../models/BackgroundHill/BackgroundHill.obj";
+	Mesh BackgroundHillMesh;
+	try {
+		BackgroundHillMesh = loadMeshFile(BackgroundHillFilename);
+		std::cout << "Successfully loaded model: " << BackgroundHillFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << BackgroundHillFilename << "\nReason: " << e.what() << std::endl;
+	}
+	Eigen::Matrix4f BackgroundHillTransform;
+	std::vector<uint8_t> BackgroundHillTexture;
+	unsigned int BackgroundHillTexWidth, BackgroundHillTexHeight;
+	lodepng::decode(BackgroundHillTexture, BackgroundHillTexWidth, BackgroundHillTexHeight, "../models/BackgroundHill/BackgroundHillTexture.png");
+	BackgroundHillTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, BackgroundHillMesh, BackgroundHillTexture, BackgroundHillTexWidth, BackgroundHillTexHeight, BackgroundHillTransform, worldToClip, lights, width, height);
+
+	/*std::string BackgroundLeavesFilename = "../models/BackgroundLeaves/BackgroundLeaves.obj";*/
 	//Mesh BackgroundLeavesMesh;
 	//try {
 	//	BackgroundLeavesMesh = loadMeshFile(BackgroundLeavesFilename);
@@ -500,284 +507,265 @@ int main()
 	//BackgroundLeavesTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
 	//drawMesh(imageBuffer, zBuffer, BackgroundLeavesMesh, BackgroundLeavesTexture, BackgroundLeavesTexWidth, BackgroundLeavesTexHeight, BackgroundLeavesTransform, worldToClip, lights, width, height);
 
-	//std::string BackgroundPostFilename = "../models/BackgroundPost/BackgroundPost.obj";
-
-	//Mesh BackgroundPostMesh;
-	//try {
-	//	BackgroundPostMesh = loadMeshFile(BackgroundPostFilename);
-	//	std::cout << "Successfully loaded model: " << BackgroundPostFilename << std::endl;
-	//}
-	//catch (const std::exception& e) {
-	//	std::cerr << "Failed to load model: " << BackgroundPostFilename << "\nReason: " << e.what() << std::endl;
-	//}
-
-	//Eigen::Matrix4f BackgroundPostTransform;
-
-	//std::vector<uint8_t> BackgroundPostTexture;
-	//unsigned int BackgroundPostTexWidth, BackgroundPostTexHeight;
-	//lodepng::decode(BackgroundPostTexture, BackgroundPostTexWidth, BackgroundPostTexHeight, "../models/BackgroundPost/BackgroundPostTexture.png");
-
-	//BackgroundPostTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
-	//drawMesh(imageBuffer, zBuffer, BackgroundPostMesh, BackgroundPostTexture, BackgroundPostTexWidth, BackgroundPostTexHeight, BackgroundPostTransform, worldToClip, lights, width, height);
-
-	//std::string BackgroundRocks_HFilename = "../models/Backgroundrock_H/BackgroundRocks_H.obj";
-
-	//Mesh BackgroundRocks_HMesh;
-	//try {
-	//	BackgroundRocks_HMesh = loadMeshFile(BackgroundRocks_HFilename);
-	//	std::cout << "Successfully loaded model: " << BackgroundRocks_HFilename << std::endl;
-	//}
-	//catch (const std::exception& e) {
-	//	std::cerr << "Failed to load model: " << BackgroundRocks_HFilename << "\nReason: " << e.what() << std::endl;
-	//}
-
-	//Eigen::Matrix4f BackgroundRocks_HTransform;
-
-	//std::vector<uint8_t> BackgroundRocks_HTexture;
-	//unsigned int BackgroundRocks_HTexWidth, BackgroundRocks_HTexHeight;
-	//lodepng::decode(BackgroundRocks_HTexture, BackgroundRocks_HTexWidth, BackgroundRocks_HTexHeight, "../models/Backgroundrock_H/BackgroundRocks_HTexture.png");
-
-	//BackgroundRocks_HTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
-	//drawMesh(imageBuffer, zBuffer, BackgroundRocks_HMesh, BackgroundRocks_HTexture, BackgroundRocks_HTexWidth, BackgroundRocks_HTexHeight, BackgroundRocks_HTransform, worldToClip, lights, width, height);
-
-	//std::string BackgroundRocksFilename = "../models/BackgroundRocks/BackgroundRocks.obj";
-
-	//Mesh BackgroundRocksMesh;
-	//try {
-	//	BackgroundRocksMesh = loadMeshFile(BackgroundRocksFilename);
-	//	std::cout << "Successfully loaded model: " << BackgroundRocksFilename << std::endl;
-	//}
-	//catch (const std::exception& e) {
-	//	std::cerr << "Failed to load model: " << BackgroundRocksFilename << "\nReason: " << e.what() << std::endl;
-	//}
-
-	//Eigen::Matrix4f BackgroundRocksTransform;
-
-	//std::vector<uint8_t> BackgroundRocksTexture;
-	//unsigned int BackgroundRocksTexWidth, BackgroundRocksTexHeight;
-	//lodepng::decode(BackgroundRocksTexture, BackgroundRocksTexWidth, BackgroundRocksTexHeight, "../models/BackgroundRocks/BackgroundRocksTexture.png");
-
-	//BackgroundRocksTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
-	//drawMesh(imageBuffer, zBuffer, BackgroundRocksMesh, BackgroundRocksTexture, BackgroundRocksTexWidth, BackgroundRocksTexHeight, BackgroundRocksTransform, worldToClip, lights, width, height);
-
-	//std::string CliffGrassFilename = "../models/CliffGrass/CliffGrass.obj";
-
-	//Mesh CliffGrassMesh;
-	//try {
-	//	CliffGrassMesh = loadMeshFile(CliffGrassFilename);
-	//	std::cout << "Successfully loaded model: " << CliffGrassFilename << std::endl;
-	//}
-	//catch (const std::exception& e) {
-	//	std::cerr << "Failed to load model: " << CliffGrassFilename << "\nReason: " << e.what() << std::endl;
-	//}
-
-	//Eigen::Matrix4f CliffGrassTransform;
-
-	//std::vector<uint8_t> CliffGrassTexture;
-	//unsigned int CliffGrassTexWidth, CliffGrassTexHeight;
-	//lodepng::decode(CliffGrassTexture, CliffGrassTexWidth, CliffGrassTexHeight, "../models/CliffGrass/CliffGrassTexture.png");
-
-	//CliffGrassTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
-	//drawMesh(imageBuffer, zBuffer, CliffGrassMesh, CliffGrassTexture, CliffGrassTexWidth, CliffGrassTexHeight, CliffGrassTransform, worldToClip, lights, width, height);
-
-	//std::string CliffPostFilename = "../models/CliffPost/CliffPost.obj";
-
-	//Mesh CliffPostMesh;
-	//try {
-	//	CliffPostMesh = loadMeshFile(CliffPostFilename);
-	//	std::cout << "Successfully loaded model: " << CliffPostFilename << std::endl;
-	//}
-	//catch (const std::exception& e) {
-	//	std::cerr << "Failed to load model: " << CliffPostFilename << "\nReason: " << e.what() << std::endl;
-	//}
-
-	//Eigen::Matrix4f CliffPostTransform;
-
-	//std::vector<uint8_t> CliffPostTexture;
-	//unsigned int CliffPostTexWidth, CliffPostTexHeight;
-	//lodepng::decode(CliffPostTexture, CliffPostTexWidth, CliffPostTexHeight, "../models/CliffPost/CliffPostTexture.png");
-
-	//CliffPostTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
-	//drawMesh(imageBuffer, zBuffer, CliffPostMesh, CliffPostTexture, CliffPostTexWidth, CliffPostTexHeight, CliffPostTransform, worldToClip, lights, width, height);
-
-	//std::string CliffRocksFilename = "../models/CliffRocks/CliffRocks.obj";
-
-	//Mesh CliffRocksMesh;
-	//try {
-	//	CliffRocksMesh = loadMeshFile(CliffRocksFilename);
-	//	std::cout << "Successfully loaded model: " << CliffRocksFilename << std::endl;
-	//}
-	//catch (const std::exception& e) {
-	//	std::cerr << "Failed to load model: " << CliffRocksFilename << "\nReason: " << e.what() << std::endl;
-	//}
-
-	//Eigen::Matrix4f CliffRocksTransform;
-
-	//std::vector<uint8_t> CliffRocksTexture;
-	//unsigned int CliffRocksTexWidth, CliffRocksTexHeight;
-	//lodepng::decode(CliffRocksTexture, CliffRocksTexWidth, CliffRocksTexHeight, "../models/CliffRocks/CliffRocksTexture.png");
-
-	//CliffRocksTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
-	//drawMesh(imageBuffer, zBuffer, CliffRocksMesh, CliffRocksTexture, CliffRocksTexWidth, CliffRocksTexHeight, CliffRocksTransform, worldToClip, lights, width, height);
-
-	//std::string FloorLeavesFilename = "../models/FloorLeaves/FloorLeaves.obj";
-
-	//Mesh FloorLeavesMesh;
-	//try {
-	//	FloorLeavesMesh = loadMeshFile(FloorLeavesFilename);
-	//	std::cout << "Successfully loaded model: " << FloorLeavesFilename << std::endl;
-	//}
-	//catch (const std::exception& e) {
-	//	std::cerr << "Failed to load model: " << FloorLeavesFilename << "\nReason: " << e.what() << std::endl;
-	//}
-
-	//Eigen::Matrix4f FloorLeavesTransform;
-
-	//std::vector<uint8_t> FloorLeavesTexture;
-	//unsigned int FloorLeavesTexWidth, FloorLeavesTexHeight;
-	//lodepng::decode(FloorLeavesTexture, FloorLeavesTexWidth, FloorLeavesTexHeight, "../models/FloorLeaves/FloorLeavesTexture.png");
-
-	//FloorLeavesTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
-	//drawMesh(imageBuffer, zBuffer, FloorLeavesMesh, FloorLeavesTexture, FloorLeavesTexWidth, FloorLeavesTexHeight, FloorLeavesTransform, worldToClip, lights, width, height);
-
-	//std::string NormalTreesFilename = "../models/NormalTrees/NormalTrees.obj";
-
-	//Mesh NormalTreesMesh;
-	//try {
-	//	NormalTreesMesh = loadMeshFile(NormalTreesFilename);
-	//	std::cout << "Successfully loaded model: " << NormalTreesFilename << std::endl;
-	//}
-	//catch (const std::exception& e) {
-	//	std::cerr << "Failed to load model: " << NormalTreesFilename << "\nReason: " << e.what() << std::endl;
-	//}
-
-	//Eigen::Matrix4f NormalTreesTransform;
-
-	//std::vector<uint8_t> NormalTreesTexture;
-	//unsigned int NormalTreesTexWidth, NormalTreesTexHeight;
-	//lodepng::decode(NormalTreesTexture, NormalTreesTexWidth, NormalTreesTexHeight, "../models/NormalTrees/NormalTreesTexture.png");
-
-	//NormalTreesTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
-	//drawMesh(imageBuffer, zBuffer, NormalTreesMesh, NormalTreesTexture, NormalTreesTexWidth, NormalTreesTexHeight, NormalTreesTransform, worldToClip, lights, width, height);
-	//std::string SideHillFilename = "../models/SideHill/SideHill.obj";
-
-	//Mesh SideHillMesh;
-	//try {
-	//	SideHillMesh = loadMeshFile(SideHillFilename);
-	//	std::cout << "Successfully loaded model: " << SideHillFilename << std::endl;
-	//}
-	//catch (const std::exception& e) {
-	//	std::cerr << "Failed to load model: " << SideHillFilename << "\nReason: " << e.what() << std::endl;
-	//}
-
-	//Eigen::Matrix4f SideHillTransform;
-
-	//std::vector<uint8_t> SideHillTexture;
-	//unsigned int SideHillTexWidth, SideHillTexHeight;
-	//lodepng::decode(SideHillTexture, SideHillTexWidth, SideHillTexHeight, "../models/SideHill/SideHillTexture.png");
-
-	//SideHillTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
-	//drawMesh(imageBuffer, zBuffer, SideHillMesh, SideHillTexture, SideHillTexWidth, SideHillTexHeight, SideHillTransform, worldToClip, lights, width, height);
-
-	//std::string SideHill_GrassFilename = "../models/SideHill_Grass/SideHill_Grass.obj";
-
-	//Mesh SideHill_GrassMesh;
-	//try {
-	//	SideHill_GrassMesh = loadMeshFile(SideHill_GrassFilename);
-	//	std::cout << "Successfully loaded model: " << SideHill_GrassFilename << std::endl;
-	//}
-	//catch (const std::exception& e) {
-	//	std::cerr << "Failed to load model: " << SideHill_GrassFilename << "\nReason: " << e.what() << std::endl;
-	//}
-
-	//Eigen::Matrix4f SideHill_GrassTransform;
-
-	//std::vector<uint8_t> SideHill_GrassTexture;
-	//unsigned int SideHill_GrassTexWidth, SideHill_GrassTexHeight;
-	//lodepng::decode(SideHill_GrassTexture, SideHill_GrassTexWidth, SideHill_GrassTexHeight, "../models/SideHill_Grass/SideHill_GrassTexture.png");
-
-	//SideHill_GrassTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
-	//drawMesh(imageBuffer, zBuffer, SideHill_GrassMesh, SideHill_GrassTexture, SideHill_GrassTexWidth, SideHill_GrassTexHeight, SideHill_GrassTransform, worldToClip, lights, width, height);
-
-	//std::string SideHill_LeavesFilename = "../models/SideHill_Leaves/SideHill_Leaves.obj";
-
-	//Mesh SideHill_LeavesMesh;
-	//try {
-	//	SideHill_LeavesMesh = loadMeshFile(SideHill_LeavesFilename);
-	//	std::cout << "Successfully loaded model: " << SideHill_LeavesFilename << std::endl;
-	//}
-	//catch (const std::exception& e) {
-	//	std::cerr << "Failed to load model: " << SideHill_LeavesFilename << "\nReason: " << e.what() << std::endl;
-	//}
-
-	//Eigen::Matrix4f SideHill_LeavesTransform;
-
-	//std::vector<uint8_t> SideHill_LeavesTexture;
-	//unsigned int SideHill_LeavesTexWidth, SideHill_LeavesTexHeight;
-	//lodepng::decode(SideHill_LeavesTexture, SideHill_LeavesTexWidth, SideHill_LeavesTexHeight, "../models/SideHill_Leaves/SideHill_LeavesTexture.png");
-
-	//SideHill_LeavesTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
-	//drawMesh(imageBuffer, zBuffer, SideHill_LeavesMesh, SideHill_LeavesTexture, SideHill_LeavesTexWidth, SideHill_LeavesTexHeight, SideHill_LeavesTransform, worldToClip, lights, width, height);
-
-	//std::string SideHill_RockFilename = "../models/SideHill_Rock/SideHill_Rock.obj";
-
-	//Mesh SideHill_RockMesh;
-	//try {
-	//	SideHill_RockMesh = loadMeshFile(SideHill_RockFilename);
-	//	std::cout << "Successfully loaded model: " << SideHill_RockFilename << std::endl;
-	//}
-	//catch (const std::exception& e) {
-	//	std::cerr << "Failed to load model: " << SideHill_RockFilename << "\nReason: " << e.what() << std::endl;
-	//}
-
-	//Eigen::Matrix4f SideHill_RockTransform;
-
-	//std::vector<uint8_t> SideHill_RockTexture;
-	//unsigned int SideHill_RockTexWidth, SideHill_RockTexHeight;
-	//lodepng::decode(SideHill_RockTexture, SideHill_RockTexWidth, SideHill_RockTexHeight, "../models/SideHill_Rock/SideHill_RockTexture.png");
-
-	//SideHill_RockTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
-	//drawMesh(imageBuffer, zBuffer, SideHill_RockMesh, SideHill_RockTexture, SideHill_RockTexWidth, SideHill_RockTexHeight, SideHill_RockTransform, worldToClip, lights, width, height);
-
-	//std::string SignFilename = "../models/Sign/Sign.obj";
-
-	//Mesh SignMesh;
-	//try {
-	//	SignMesh = loadMeshFile(SignFilename);
-	//	std::cout << "Successfully loaded model: " << SignFilename << std::endl;
-	//}
-	//catch (const std::exception& e) {
-	//	std::cerr << "Failed to load model: " << SignFilename << "\nReason: " << e.what() << std::endl;
-	//}
-
-	//Eigen::Matrix4f SignTransform;
-
-	//std::vector<uint8_t> SignTexture;
-	//unsigned int SignTexWidth, SignTexHeight;
-	//lodepng::decode(SignTexture, SignTexWidth, SignTexHeight, "../models/Sign/SignTexture.png");
-
-	//SignTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
-	//drawMesh(imageBuffer, zBuffer, SignMesh, SignTexture, SignTexWidth, SignTexHeight, SignTransform, worldToClip, lights, width, height);
-
-	//std::string SignLegsFilename = "../models/SignLegs/SignLegs.obj";
-
-	//Mesh SignLegsMesh;
-	//try {
-	//	SignLegsMesh = loadMeshFile(SignLegsFilename);
-	//	std::cout << "Successfully loaded model: " << SignLegsFilename << std::endl;
-	//}
-	//catch (const std::exception& e) {
-	//	std::cerr << "Failed to load model: " << SignLegsFilename << "\nReason: " << e.what() << std::endl;
-	//}
-
-	//Eigen::Matrix4f SignLegsTransform;
-
-	//std::vector<uint8_t> SignLegsTexture;
-	//unsigned int SignLegsTexWidth, SignLegsTexHeight;
-	//lodepng::decode(SignLegsTexture, SignLegsTexWidth, SignLegsTexHeight, "../models/SignLegs/SignLegsTexture.png");
-
-	//SignLegsTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
-	//drawMesh(imageBuffer, zBuffer, SignLegsMesh, SignLegsTexture, SignLegsTexWidth, SignLegsTexHeight, SignLegsTransform, worldToClip, lights, width, height);
+	std::string BackgroundPostFilename = "../models/BackgroundPost/BackgroundPost.obj";
+
+	Mesh BackgroundPostMesh;
+	try {
+		BackgroundPostMesh = loadMeshFile(BackgroundPostFilename);
+		std::cout << "Successfully loaded model: " << BackgroundPostFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << BackgroundPostFilename << "\nReason: " << e.what() << std::endl;
+	}
+
+	Eigen::Matrix4f BackgroundPostTransform;
+
+	std::vector<uint8_t> BackgroundPostTexture;
+	unsigned int BackgroundPostTexWidth, BackgroundPostTexHeight;
+	lodepng::decode(BackgroundPostTexture, BackgroundPostTexWidth, BackgroundPostTexHeight, "../models/BackgroundPost/BackgroundPostTexture.png");
+
+	BackgroundPostTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, BackgroundPostMesh, BackgroundPostTexture, BackgroundPostTexWidth, BackgroundPostTexHeight, BackgroundPostTransform, worldToClip, lights, width, height);
+
+	std::string BackgroundRocks_HFilename = "../models/Backgroundrock_H/BackgroundRocks_H.obj";
+
+	Mesh BackgroundRocks_HMesh;
+	try {
+		BackgroundRocks_HMesh = loadMeshFile(BackgroundRocks_HFilename);
+		std::cout << "Successfully loaded model: " << BackgroundRocks_HFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << BackgroundRocks_HFilename << "\nReason: " << e.what() << std::endl;
+	}
+
+	Eigen::Matrix4f BackgroundRocks_HTransform;
+
+	std::vector<uint8_t> BackgroundRocks_HTexture;
+	unsigned int BackgroundRocks_HTexWidth, BackgroundRocks_HTexHeight;
+	lodepng::decode(BackgroundRocks_HTexture, BackgroundRocks_HTexWidth, BackgroundRocks_HTexHeight, "../models/Backgroundrock_H/BackgroundRocks_HTexture.png");
+
+	BackgroundRocks_HTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, BackgroundRocks_HMesh, BackgroundRocks_HTexture, BackgroundRocks_HTexWidth, BackgroundRocks_HTexHeight, BackgroundRocks_HTransform, worldToClip, lights, width, height);
+
+	std::string BackgroundRocksFilename = "../models/BackgroundRocks/BackgroundRocks.obj";
+
+	Mesh BackgroundRocksMesh;
+	try {
+		BackgroundRocksMesh = loadMeshFile(BackgroundRocksFilename);
+		std::cout << "Successfully loaded model: " << BackgroundRocksFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << BackgroundRocksFilename << "\nReason: " << e.what() << std::endl;
+	}
+
+	Eigen::Matrix4f BackgroundRocksTransform;
+
+	std::vector<uint8_t> BackgroundRocksTexture;
+	unsigned int BackgroundRocksTexWidth, BackgroundRocksTexHeight;
+	lodepng::decode(BackgroundRocksTexture, BackgroundRocksTexWidth, BackgroundRocksTexHeight, "../models/BackgroundRocks/BackgroundRocksTexture.png");
+
+	BackgroundRocksTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, BackgroundRocksMesh, BackgroundRocksTexture, BackgroundRocksTexWidth, BackgroundRocksTexHeight, BackgroundRocksTransform, worldToClip, lights, width, height);
+
+	std::string CliffGrassFilename = "../models/CliffGrass/CliffGrass.obj";
+
+	Mesh CliffGrassMesh;
+	try {
+		CliffGrassMesh = loadMeshFile(CliffGrassFilename);
+		std::cout << "Successfully loaded model: " << CliffGrassFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << CliffGrassFilename << "\nReason: " << e.what() << std::endl;
+	}
+
+	Eigen::Matrix4f CliffGrassTransform;
+
+	std::vector<uint8_t> CliffGrassTexture;
+	unsigned int CliffGrassTexWidth, CliffGrassTexHeight;
+	lodepng::decode(CliffGrassTexture, CliffGrassTexWidth, CliffGrassTexHeight, "../models/CliffGrass/CliffGrassTexture.png");
+
+	CliffGrassTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, CliffGrassMesh, CliffGrassTexture, CliffGrassTexWidth, CliffGrassTexHeight, CliffGrassTransform, worldToClip, lights, width, height);
+
+	std::string CliffPostFilename = "../models/CliffPost/CliffPosts.obj";
+
+	Mesh CliffPostMesh;
+	try {
+		CliffPostMesh = loadMeshFile(CliffPostFilename);
+		std::cout << "Successfully loaded model: " << CliffPostFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << CliffPostFilename << "\nReason: " << e.what() << std::endl;
+	}
+
+	Eigen::Matrix4f CliffPostTransform;
+
+	std::vector<uint8_t> CliffPostTexture;
+	unsigned int CliffPostTexWidth, CliffPostTexHeight;
+	lodepng::decode(CliffPostTexture, CliffPostTexWidth, CliffPostTexHeight, "../models/CliffPost/CliffPostTexture.png");
+
+	CliffPostTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, CliffPostMesh, CliffPostTexture, CliffPostTexWidth, CliffPostTexHeight, CliffPostTransform, worldToClip, lights, width, height);
+
+	std::string CliffRocksFilename = "../models/CliffRocks/CliffRocks.obj";
+
+	Mesh CliffRocksMesh;
+	try {
+		CliffRocksMesh = loadMeshFile(CliffRocksFilename);
+		std::cout << "Successfully loaded model: " << CliffRocksFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << CliffRocksFilename << "\nReason: " << e.what() << std::endl;
+	}
+
+	Eigen::Matrix4f CliffRocksTransform;
+
+	std::vector<uint8_t> CliffRocksTexture;
+	unsigned int CliffRocksTexWidth, CliffRocksTexHeight;
+	lodepng::decode(CliffRocksTexture, CliffRocksTexWidth, CliffRocksTexHeight, "../models/CliffRocks/CliffRocksTexture.png");
+
+	CliffRocksTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, CliffRocksMesh, CliffRocksTexture, CliffRocksTexWidth, CliffRocksTexHeight, CliffRocksTransform, worldToClip, lights, width, height);
+
+	std::string FloorLeavesFilename = "../models/FloorLeaves/FloorLeaves.obj";
+
+	Mesh FloorLeavesMesh;
+	try {
+		FloorLeavesMesh = loadMeshFile(FloorLeavesFilename);
+		std::cout << "Successfully loaded model: " << FloorLeavesFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << FloorLeavesFilename << "\nReason: " << e.what() << std::endl;
+	}
+
+	Eigen::Matrix4f FloorLeavesTransform;
+
+	std::vector<uint8_t> FloorLeavesTexture;
+	unsigned int FloorLeavesTexWidth, FloorLeavesTexHeight;
+	lodepng::decode(FloorLeavesTexture, FloorLeavesTexWidth, FloorLeavesTexHeight, "../models/FloorLeaves/FloorLeavesTexture.png");
+
+	FloorLeavesTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, FloorLeavesMesh, FloorLeavesTexture, FloorLeavesTexWidth, FloorLeavesTexHeight, FloorLeavesTransform, worldToClip, lights, width, height);
+
+	std::string NormalTreesFilename = "../models/NormalTrees/NormalTrees.obj";
+
+	Mesh NormalTreesMesh;
+	try {
+		NormalTreesMesh = loadMeshFile(NormalTreesFilename);
+		std::cout << "Successfully loaded model: " << NormalTreesFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << NormalTreesFilename << "\nReason: " << e.what() << std::endl;
+	}
+
+	Eigen::Matrix4f NormalTreesTransform;
+
+	std::vector<uint8_t> NormalTreesTexture;
+	unsigned int NormalTreesTexWidth, NormalTreesTexHeight;
+	lodepng::decode(NormalTreesTexture, NormalTreesTexWidth, NormalTreesTexHeight, "../models/NormalTrees/NormalTreesTexture.png");
+
+	NormalTreesTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, NormalTreesMesh, NormalTreesTexture, NormalTreesTexWidth, NormalTreesTexHeight, NormalTreesTransform, worldToClip, lights, width, height);
+
+	std::string SideHill_GrassFilename = "../models/SideHill_Grass/SideHill_Grass.obj";
+
+	Mesh SideHill_GrassMesh;
+	try {
+		SideHill_GrassMesh = loadMeshFile(SideHill_GrassFilename);
+		std::cout << "Successfully loaded model: " << SideHill_GrassFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << SideHill_GrassFilename << "\nReason: " << e.what() << std::endl;
+	}
+
+	Eigen::Matrix4f SideHill_GrassTransform;
+
+	std::vector<uint8_t> SideHill_GrassTexture;
+	unsigned int SideHill_GrassTexWidth, SideHill_GrassTexHeight;
+	lodepng::decode(SideHill_GrassTexture, SideHill_GrassTexWidth, SideHill_GrassTexHeight, "../models/SideHill_Grass/SideHillGrassTexture.png");
+
+	SideHill_GrassTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.f));
+	drawMesh(imageBuffer, zBuffer, SideHill_GrassMesh, SideHill_GrassTexture, SideHill_GrassTexWidth, SideHill_GrassTexHeight, SideHill_GrassTransform, worldToClip, lights, width, height);
+
+	std::string SideHill_LeavesFilename = "../models/SideHill_Leaves/SideHill_Leaves.obj";
+
+	Mesh SideHill_LeavesMesh;
+	try {
+		SideHill_LeavesMesh = loadMeshFile(SideHill_LeavesFilename);
+		std::cout << "Successfully loaded model: " << SideHill_LeavesFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << SideHill_LeavesFilename << "\nReason: " << e.what() << std::endl;
+	}
+
+	Eigen::Matrix4f SideHill_LeavesTransform;
+
+	std::vector<uint8_t> SideHill_LeavesTexture;
+	unsigned int SideHill_LeavesTexWidth, SideHill_LeavesTexHeight;
+	lodepng::decode(SideHill_LeavesTexture, SideHill_LeavesTexWidth, SideHill_LeavesTexHeight, "../models/SideHill_Leaves/SideHillLeavesTexture.png");
+
+	SideHill_LeavesTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.f));
+	drawMesh(imageBuffer, zBuffer, SideHill_LeavesMesh, SideHill_LeavesTexture, SideHill_LeavesTexWidth, SideHill_LeavesTexHeight, SideHill_LeavesTransform, worldToClip, lights, width, height);
+
+	std::string SideHill_RockFilename = "../models/SideHill_Rock/SideHill_Rock.obj";
+
+	Mesh SideHill_RockMesh;
+	try {
+		SideHill_RockMesh = loadMeshFile(SideHill_RockFilename);
+		std::cout << "Successfully loaded model: " << SideHill_RockFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << SideHill_RockFilename << "\nReason: " << e.what() << std::endl;
+	}
+
+	Eigen::Matrix4f SideHill_RockTransform;
+
+	std::vector<uint8_t> SideHill_RockTexture;
+	unsigned int SideHill_RockTexWidth, SideHill_RockTexHeight;
+	lodepng::decode(SideHill_RockTexture, SideHill_RockTexWidth, SideHill_RockTexHeight, "../models/SideHill_Rock/SideHill_RockTexture.png");
+
+	SideHill_RockTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, SideHill_RockMesh, SideHill_RockTexture, SideHill_RockTexWidth, SideHill_RockTexHeight, SideHill_RockTransform, worldToClip, lights, width, height);
+
+	std::string SignFilename = "../models/Sign/Sign.obj";
+
+	Mesh SignMesh;
+	try {
+		SignMesh = loadMeshFile(SignFilename);
+		std::cout << "Successfully loaded model: " << SignFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << SignFilename << "\nReason: " << e.what() << std::endl;
+	}
+
+	Eigen::Matrix4f SignTransform;
+
+	std::vector<uint8_t> SignTexture;
+	unsigned int SignTexWidth, SignTexHeight;
+	lodepng::decode(SignTexture, SignTexWidth, SignTexHeight, "../models/Sign/SignTexture.png");
+
+	SignTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, SignMesh, SignTexture, SignTexWidth, SignTexHeight, SignTransform, worldToClip, lights, width, height);
+
+	std::string SignLegsFilename = "../models/SignLegs/SignLegs.obj";
+
+	Mesh SignLegsMesh;
+	try {
+		SignLegsMesh = loadMeshFile(SignLegsFilename);
+		std::cout << "Successfully loaded model: " << SignLegsFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << SignLegsFilename << "\nReason: " << e.what() << std::endl;
+	}
+
+	Eigen::Matrix4f SignLegsTransform;
+
+	std::vector<uint8_t> SignLegsTexture;
+	unsigned int SignLegsTexWidth, SignLegsTexHeight;
+	lodepng::decode(SignLegsTexture, SignLegsTexWidth, SignLegsTexHeight, "../models/SignLegs/SignLegsTexture.png");
+
+	SignLegsTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, SignLegsMesh, SignLegsTexture, SignLegsTexWidth, SignLegsTexHeight, SignLegsTransform, worldToClip, lights, width, height);
 
 	//std::string SmokeFilename = "../models/Smoke/Smoke.obj";
 
@@ -799,13 +787,34 @@ int main()
 	//SmokeTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
 	//drawMesh(imageBuffer, zBuffer, SmokeMesh, SmokeTexture, SmokeTexWidth, SmokeTexHeight, SmokeTransform, worldToClip, lights, width, height);
 
-	//for (const auto& vertex : CliffHillMesh.verts) {
-	//	Eigen::Vector4f transformedVertex = CliffHillTransform * Eigen::Vector4f(vertex.x(), vertex.y(), vertex.z(), 1.0f);
-	//	std::cout << "Transformed Vertex: " << transformedVertex.transpose() << std::endl;
-	//}
+	for (const auto& vertex : BackgroundPostMesh.verts) {
+		Eigen::Vector4f transformedVertex = BackgroundPostTransform * Eigen::Vector4f(vertex.x(), vertex.y(), vertex.z(), 1.0f);
+		std::cout << "Transformed Vertex: " << transformedVertex.transpose() << std::endl;
+	}
 
 	// For debug - draw point lights as colored circles so we can see where they are
 	drawPointLights(imageBuffer, width, height, lights);
+
+	for (int y = 0; y < height; ++y) // Loop through every row
+	{
+		for (int x = 0; x < width / 2; ++x) // loop halfway across each row
+		{
+			// Calculate pixel IDs on the left side
+			int leftIdx = (y * width + x) * nChannels;
+
+			// Calculate pixel IDs on the Right side
+			int rightIdx = (y * width + (width - 1 - x)) * nChannels;
+
+			// Swap all color channels between left and right
+			for (int ch = 0; ch < nChannels; ++ch)
+			{
+				std::swap(imageBuffer[leftIdx + ch], imageBuffer[rightIdx + ch]);
+			}
+
+			// Do same for the ZBuffer
+			std::swap(zBuffer[y * width + x], zBuffer[y * width + (width - 1 - x)]);
+		}
+	}
 
 	// Save the image to png.
 	int errorCode;
