@@ -19,7 +19,6 @@
 // This is a great time to start on your own code in the coursework/rasteriser folder, using this as a base if
 // you wish. We will in future labs work on more advanced shading, but you can port this feature over later.
 
-
 struct Triangle {
 	std::array<Eigen::Vector3f, 3> screen; // Coordinates of the triangle in screen space.
 	std::array<Eigen::Vector3f, 3> verts; // Vertices of the triangle in world space.
@@ -28,7 +27,7 @@ struct Triangle {
 };
 
 
-Eigen::Matrix4f projectionMatrix(int height, int width, float horzFov = 70.f * M_PI / 180.f, float zFar = 10.f, float zNear = 0.1f)
+Eigen::Matrix4f projectionMatrix(int height, int width, float horzFov = 100.f * M_PI / 180.f, float zFar = 5000.f, float zNear = 0.1f)
 {
 	// ========= Subtask 1: Make a Projection Matrix ========
 	// *** YOUR CODE HERE ***
@@ -161,16 +160,26 @@ void drawTriangle(std::vector<uint8_t>& image, int width, int height,
 			// the modulo (%) operator to wrap around, or clamping to the edges.
 			// Write your own code below to do this - once you're done you should be sure 
 			// that 0 <= texC < texWidth and 0 <= texR < texHeight.
-			if (!(0 <= texC < texWidth && 0 <= texR < texHeight)) {
+			if (texC < 0 || texC >= texWidth || texR < 0 || texR >= texHeight) {
 				continue;
 			}
 
 			// Get the value from the texture (hint: use the getPixel function on the albedoTexture).
 			Color texColor = getPixel(albedoTexture, texC, texR, texWidth, texHeight);
 
-			if (texColor.a = 0) {
+			//Alpha Transparency
+			float alpha = texColor.a / 255.0f;
+			if (texColor.a <= 1.0f) {
 				continue;
 			}
+
+			Color dstColor = getPixel(image, x, y, width, height);
+
+			Eigen::Vector3f dst(
+				dstColor.r / 255.0f,
+				dstColor.g / 255.0f,
+				dstColor.b / 255.0f
+			);
 
 			// Convert it into an Eigen::Vector3f as an albedo
 			// (Optional bonus task, if you checked out the slides on gamma correction:
@@ -225,6 +234,52 @@ void drawTriangle(std::vector<uint8_t>& image, int width, int height,
 		}
 }
 
+void downsampleImage(const std::vector<unsigned char>& tempImage,
+	std::vector<unsigned char>& image,
+	std::vector<float>& tempZBuffer,
+	std::vector<float>& zBuffer,
+	int width, int height)
+{
+	for (int y = 0; y < height; ++y) {
+		for (int x = 0; x < width; ++x) {
+			// Calculate the corresponding region in the high-resolution image (4 pixels per target pixel)
+			int highResX = x * 2;
+			int highResY = y * 2;
+
+			// Average the colors from the 4 surrounding high-resolution pixels
+			Eigen::Vector3f avgColor(0.0f, 0.0f, 0.0f);
+			float minDepth = std::numeric_limits<float>::infinity();
+
+			for (int dy = 0; dy < 2; ++dy) {
+				for (int dx = 0; dx < 2; ++dx) {
+					int idx = ((highResY + dy) * width * 2 + (highResX + dx)) * 4;
+					avgColor += Eigen::Vector3f(
+						tempImage[idx] / 255.0f,
+						tempImage[idx + 1] / 255.0f,
+						tempImage[idx + 2] / 255.0f
+					);
+
+					// Track the minimum depth value for the 4 surrounding pixels
+					int zIdx = (highResY + dy) * width * 2 + (highResX + dx);
+					minDepth = std::min(minDepth, tempZBuffer[zIdx]);
+				}
+			}
+
+			avgColor /= 4.0f;
+
+			// Set the final pixel color
+			int finalIdx = (y * width + x) * 4;
+			image[finalIdx] = static_cast<unsigned char>(std::min(avgColor.x() * 255, 255.0f));
+			image[finalIdx + 1] = static_cast<unsigned char>(std::min(avgColor.y() * 255, 255.0f));
+			image[finalIdx + 2] = static_cast<unsigned char>(std::min(avgColor.z() * 255, 255.0f));
+			image[finalIdx + 3] = 255;  // Fully opaque
+
+			// Downsample the z-buffer (use the minimum depth of the 4 surrounding pixels)
+			zBuffer[y * width + x] = minDepth;
+		}
+	}
+}
+
 void drawMesh(std::vector<unsigned char>& image,
 	std::vector<float>& zBuffer,
 	const Mesh& mesh,
@@ -232,8 +287,16 @@ void drawMesh(std::vector<unsigned char>& image,
 	const Eigen::Matrix4f& modelToWorld,
 	const Eigen::Matrix4f& worldToClip,
 	const std::vector<std::unique_ptr<Light>>& lights,
-	int width, int height)
+	int width, int height, bool isHighRes = false)
 {
+
+	int renderWidth = isHighRes ? width * 2 : width;
+	int renderHeight = isHighRes ? height * 2 : height;
+
+	std::vector<unsigned char> tempImage(renderWidth * renderHeight * 4, 0);  // RGBA format
+	std::vector<float> tempZBuffer(renderWidth * renderHeight, std::numeric_limits<float>::infinity());
+
+
 	for (int i = 0; i < mesh.vFaces.size(); ++i) {
 
 
@@ -309,7 +372,15 @@ void drawMesh(std::vector<unsigned char>& image,
 			t.texs[1] = mesh.texs[mesh.tFaces[i][1]];
 			t.texs[2] = mesh.texs[mesh.tFaces[i][2]];
 
-			drawTriangle(image, width, height, zBuffer, t, lights, albedoTexture, texWidth, texHeight);
+			// Now draw to this temporary high-res buffer
+			for (int i = 0; i < mesh.vFaces.size(); ++i) {
+				// Your current logic to draw triangles
+
+				// Make sure the triangle is drawn using the correct screen space for high res
+				drawTriangle(tempImage, renderWidth, renderHeight, tempZBuffer, t, lights, albedoTexture, texWidth, texHeight);
+			}
+
+			downsampleImage(tempImage, image, tempZBuffer, zBuffer, width, height);
 		}
 	}
 }
@@ -347,7 +418,7 @@ int main()
 
 	// This matrix rotates the camera, tilting it down, then translates it up to make it look down on the scene.
 	// Once your code is working, try changing this to move the camera around!
-	Eigen::Matrix4f cameraToWorld = translationMatrix(Eigen::Vector3f(0.0f, 0.5f, 1.3f)) * rotateXMatrix(0.4);
+	Eigen::Matrix4f cameraToWorld = translationMatrix(Eigen::Vector3f(-0.05f, 0.4f, 1.55f)) * rotateXMatrix(0.35) * rotateYMatrix(-0.04);
 
 	// The main important task = set up the worldToCamera and worldToClip matrices here!
 	// Set up worldToCamera, based on cameraToWorld above
@@ -366,11 +437,11 @@ int main()
 
 	std::vector<std::unique_ptr<Light>> lights;
 	// I've already added an ambient light for you!
-	lights.emplace_back(new AmbientLight(Eigen::Vector3f(0.1f, 0.1f, 0.1f)));
+	lights.emplace_back(new AmbientLight(Eigen::Vector3f(0.2f, 0.2f, 0.2f)));
 
 	//lights.emplace_back(new PointLight(Eigen::Vector3f(1.1f, 1.1f, 1.1f), Eigen::Vector3f(0.f, 1.0f, 0.f)));
-	lights.emplace_back(new PointLight(Eigen::Vector3f(1.0f, 1.0f, 1.0f), Eigen::Vector3f(0.f, 0.f, 0.f)));
-	lights.emplace_back(new DirectionalLight(Eigen::Vector3f(0.4f, 0.4f, 0.4f), Eigen::Vector3f(1.f, 0.f, 0.0f)));
+	//lights.emplace_back(new PointLight(Eigen::Vector3f(1.0f, 1.0f, 1.0f), Eigen::Vector3f(0.f, 0.f, 0.f)));
+	lights.emplace_back(new DirectionalLight(Eigen::Vector3f(1.3f, 1.3f, 1.3f), Eigen::Vector3f(0.f, 0.f, 1.0f)));
 	//lights.emplace_back(new SpotLight(Eigen::Vector3f(10.0f, 0.0f, 0.0f), Eigen::Vector3f(0.f, 1.f, 0.0f), Eigen::Vector3f(0, -1, 0), M_PI/8));
 
 	Mesh bunnyMesh;
@@ -440,9 +511,6 @@ int main()
 	CliffHillTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.f, 3.0f));
 	drawMesh(imageBuffer, zBuffer, CliffHillMesh, CliffHillTexture, CliffHillTexWidth, CliffHillTexHeight, CliffHillTransform, worldToClip, lights, width, height);
 
-	//GroundLeavesTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
-	//drawMesh(imageBuffer, zBuffer, GroundLeavesMesh, GroundLeavesTexture, GroundLeavesTexWidth, GroundLeavesTexHeight, GroundLeavesTransform, worldToClip, lights, width, height);
-
 	std::string AutumnTreesFilename = "../models/AutumnTrees/AutumnTrees.obj";
 	Mesh AutumnTreesMesh;
 	try {
@@ -459,7 +527,7 @@ int main()
 	AutumnTreesTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
 	drawMesh(imageBuffer, zBuffer, AutumnTreesMesh, AutumnTreesTexture, AutumnTreesTexWidth, AutumnTreesTexHeight, AutumnTreesTransform, worldToClip, lights, width, height);
 
-	/*std::string AutumnLeavesFilename = "../models/AutumnLeaves/AutumnLeaves.obj";
+	std::string AutumnLeavesFilename = "../models/AutumnLeaves/AutumnLeaves4.obj";
 	Mesh AutumnLeavesMesh;
 	try {
 		AutumnLeavesMesh = loadMeshFile(AutumnLeavesFilename);
@@ -472,8 +540,8 @@ int main()
 	std::vector<uint8_t> AutumnLeavesTexture;
 	unsigned int AutumnLeavesTexWidth, AutumnLeavesTexHeight;
 	lodepng::decode(AutumnLeavesTexture, AutumnLeavesTexWidth, AutumnLeavesTexHeight, "../models/AutumnLeaves/AutumnLeavesTexture.png");
-	AutumnTreesTransform = translationMatrix(Eigen::Vector3f(1.0f, 0.0f, 3.0f));
-	drawMesh(imageBuffer, zBuffer, AutumnLeavesMesh, AutumnLeavesTexture, AutumnLeavesTexWidth, AutumnLeavesTexHeight, AutumnLeavesTransform, worldToClip, lights, width, height);*/
+	AutumnLeavesTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, AutumnLeavesMesh, AutumnLeavesTexture, AutumnLeavesTexWidth, AutumnLeavesTexHeight, AutumnLeavesTransform, worldToClip, lights, width, height);
 
 	std::string BackgroundHillFilename = "../models/BackgroundHill/BackgroundHill.obj";
 	Mesh BackgroundHillMesh;
@@ -567,6 +635,126 @@ int main()
 	BackgroundRocksTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
 	drawMesh(imageBuffer, zBuffer, BackgroundRocksMesh, BackgroundRocksTexture, BackgroundRocksTexWidth, BackgroundRocksTexHeight, BackgroundRocksTransform, worldToClip, lights, width, height);
 
+	std::string CarBodyFilename = "../models/CarBody/CarBody2.obj";
+
+	Mesh CarBodyMesh;
+	try {
+		CarBodyMesh = loadMeshFile(CarBodyFilename);
+		std::cout << "Successfully loaded model: " << CarBodyFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << CarBodyFilename << "\nReason: " << e.what() << std::endl;
+	}
+
+	Eigen::Matrix4f  CarBodyTransform;
+
+	std::vector<uint8_t>  CarBodyTexture;
+	unsigned int CarBodyTexWidth, CarBodyTexHeight;
+	lodepng::decode(CarBodyTexture, CarBodyTexWidth, CarBodyTexHeight, "../models/CarBody/CarBodyTexture.png");
+
+	CarBodyTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, CarBodyMesh, CarBodyTexture, CarBodyTexWidth, CarBodyTexHeight, CarBodyTransform, worldToClip, lights, width, height);
+
+	std::string CarTireFilename = "../models/CarTire/CarTire.obj";
+
+	Mesh CarTireMesh;
+	try {
+		CarTireMesh = loadMeshFile(CarTireFilename);
+		std::cout << "Successfully loaded model: " << CarTireFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << CarTireFilename << "\nReason: " << e.what() << std::endl;
+	}
+
+	Eigen::Matrix4f  CarTireTransform;
+
+	std::vector<uint8_t> CarTireTexture;
+	unsigned int CarTireTexWidth, CarTireTexHeight;
+	lodepng::decode(CarTireTexture, CarTireTexWidth, CarTireTexHeight, "../models/CarTire/CarTireTexture.png");
+
+	CarTireTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, CarTireMesh, CarTireTexture, CarTireTexWidth, CarTireTexHeight, CarTireTransform, worldToClip, lights, width, height);
+
+	std::string CarBadgeFilename = "../models/CarBadge/CarBadge.obj";
+
+	Mesh  CarBadgeMesh;
+	try {
+		CarBadgeMesh = loadMeshFile(CarBadgeFilename);
+		std::cout << "Successfully loaded model: " << CarBadgeFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << CarBadgeFilename << "\nReason: " << e.what() << std::endl;
+	}
+
+	Eigen::Matrix4f   CarBadgeTransform;
+
+	std::vector<uint8_t> CarBadgeTexture;
+	unsigned int  CarBadgeTexWidth, CarBadgeTexHeight;
+	lodepng::decode(CarBadgeTexture, CarBadgeTexWidth, CarBadgeTexHeight, "../models/CarBadge/CarBadgeTexture.png");
+
+	CarBadgeTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, CarBadgeMesh, CarBadgeTexture, CarBadgeTexWidth, CarBadgeTexHeight, CarBadgeTransform, worldToClip, lights, width, height);
+
+	std::string CarRimsFilename = "../models/CarRims/CarRims.obj";
+
+	Mesh  CarRimsMesh;
+	try {
+		CarRimsMesh = loadMeshFile(CarRimsFilename);
+		std::cout << "Successfully loaded model: " << CarRimsFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << CarRimsFilename << "\nReason: " << e.what() << std::endl;
+	}
+
+	Eigen::Matrix4f CarRimsTransform;
+
+	std::vector<uint8_t>CarRimsTexture;
+	unsigned int  CarRimsTexWidth, CarRimsTexHeight;
+	lodepng::decode(CarRimsTexture, CarRimsTexWidth, CarRimsTexHeight, "../models/CarRims/CarRimsTexture.png");
+
+	CarRimsTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, CarRimsMesh, CarRimsTexture, CarRimsTexWidth, CarRimsTexHeight, CarRimsTransform, worldToClip, lights, width, height);
+
+	std::string CarMirrorFilename = "../models/CarMirror/CarMirror.obj";
+
+	Mesh  CarMirrorMesh;
+	try {
+		CarMirrorMesh = loadMeshFile(CarMirrorFilename);
+		std::cout << "Successfully loaded model: " << CarMirrorFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << CarMirrorFilename << "\nReason: " << e.what() << std::endl;
+	}
+
+	Eigen::Matrix4f CarMirrorTransform;
+
+	std::vector<uint8_t>CarMirrorTexture;
+	unsigned int  CarMirrorTexWidth, CarMirrorTexHeight;
+	lodepng::decode(CarMirrorTexture, CarMirrorTexWidth, CarMirrorTexHeight, "../models/CarMirror/CarMirrorTexture.png");
+
+	CarMirrorTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, CarMirrorMesh, CarMirrorTexture, CarMirrorTexWidth, CarMirrorTexHeight, CarMirrorTransform, worldToClip, lights, width, height);
+
+	std::string CarWindowFilename = "../models/CarWindow/CarWindow.obj";
+
+	Mesh  CarWindowMesh;
+	try {
+		CarWindowMesh = loadMeshFile(CarWindowFilename);
+		std::cout << "Successfully loaded model: " << CarWindowFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << CarWindowFilename << "\nReason: " << e.what() << std::endl;
+	}
+
+	Eigen::Matrix4f CarWindowTransform;
+
+	std::vector<uint8_t> CarWindowTexture;
+	unsigned int  CarWindowTexWidth, CarWindowTexHeight;
+	lodepng::decode(CarWindowTexture, CarWindowTexWidth, CarWindowTexHeight, "../models/CarWindow/CarWindowTexture.png");
+
+	CarWindowTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, CarWindowMesh, CarWindowTexture, CarWindowTexWidth, CarWindowTexHeight, CarWindowTransform, worldToClip, lights, width, height);
+
 	std::string CliffGrassFilename = "../models/CliffGrass/CliffGrass.obj";
 
 	Mesh CliffGrassMesh;
@@ -627,7 +815,7 @@ int main()
 	CliffRocksTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
 	drawMesh(imageBuffer, zBuffer, CliffRocksMesh, CliffRocksTexture, CliffRocksTexWidth, CliffRocksTexHeight, CliffRocksTransform, worldToClip, lights, width, height);
 
-	std::string FloorLeavesFilename = "../models/FloorLeaves/FloorLeaves2.obj";
+	std::string FloorLeavesFilename = "../models/FloorLeaves/FloorLeaves.obj";
 
 	Mesh FloorLeavesMesh;
 	try {
@@ -642,7 +830,7 @@ int main()
 
 	std::vector<uint8_t> FloorLeavesTexture;
 	unsigned int FloorLeavesTexWidth, FloorLeavesTexHeight;
-	lodepng::decode(FloorLeavesTexture, FloorLeavesTexWidth, FloorLeavesTexHeight, "../models/FloorLeaves/FloorLeavesTexture.png");
+	lodepng::decode(FloorLeavesTexture, FloorLeavesTexWidth, FloorLeavesTexHeight, "../models/FloorLeaves/FloorLeavesTexture1.png");
 
 	FloorLeavesTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
 	drawMesh(imageBuffer, zBuffer, FloorLeavesMesh, FloorLeavesTexture, FloorLeavesTexWidth, FloorLeavesTexHeight, FloorLeavesTransform, worldToClip, lights, width, height);
@@ -666,6 +854,26 @@ int main()
 
 	NormalTreesTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
 	drawMesh(imageBuffer, zBuffer, NormalTreesMesh, NormalTreesTexture, NormalTreesTexWidth, NormalTreesTexHeight, NormalTreesTransform, worldToClip, lights, width, height);
+
+	std::string NormalLeavesFilename = "../models/NormalLeaves/NormalLeaves.obj";
+
+	Mesh NormalLeavesMesh;
+	try {
+		NormalLeavesMesh = loadMeshFile(NormalLeavesFilename);
+		std::cout << "Successfully loaded model: " << NormalLeavesFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << NormalLeavesFilename << "\nReason: " << e.what() << std::endl;
+	}
+
+	Eigen::Matrix4f NormalLeavesTransform;
+
+	std::vector<uint8_t> NormalLeavesTexture;
+	unsigned int NormalLeavesTexWidth, NormalLeavesTexHeight;
+	lodepng::decode(NormalLeavesTexture, NormalLeavesTexWidth, NormalLeavesTexHeight, "../models/NormalLeaves/NormalLeavesTexture.png");
+
+	NormalLeavesTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, NormalLeavesMesh, NormalLeavesTexture, NormalLeavesTexWidth, NormalLeavesTexHeight, NormalLeavesTransform, worldToClip, lights, width, height);
 
 	std::string SideHill_GrassFilename = "../models/SideHill_Grass/SideHill_Grass.obj";
 
@@ -767,50 +975,51 @@ int main()
 	SignLegsTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
 	drawMesh(imageBuffer, zBuffer, SignLegsMesh, SignLegsTexture, SignLegsTexWidth, SignLegsTexHeight, SignLegsTransform, worldToClip, lights, width, height);
 
-	//std::string FlooringFilename = "../models/Flooring/Flooring.obj";
+	std::string SkyBoxFilename = "../models/SkyBox/SkyBox.obj";
 
-	//Mesh FlooringMesh;
-	//try {
-	//	FlooringMesh = loadMeshFile(FlooringFilename);
-	//	std::cout << "Successfully loaded model: " << FlooringFilename << std::endl;
-	//}
-	//catch (const std::exception& e) {
-	//	std::cerr << "Failed to load model: " << FlooringFilename << "\nReason: " << e.what() << std::endl;
-	//}
+	Mesh SkyBoxMesh;
+	try {
+		SkyBoxMesh = loadMeshFile(SkyBoxFilename);
+		std::cout << "Successfully loaded model: " << SkyBoxFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << SkyBoxFilename << "\nReason: " << e.what() << std::endl;
+	}
 
-	//Eigen::Matrix4f FlooringTransform;
+	Eigen::Matrix4f SkyBoxTransform;
 
-	//std::vector<uint8_t> FlooringTexture;
-	//unsigned int FlooringTexWidth, FlooringTexHeight;
-	//lodepng::decode(FlooringTexture, FlooringTexWidth, FlooringTexHeight, "../models/Flooring/Flooring.png");
+	std::vector<uint8_t>SkyBoxTexture;
+	unsigned int SkyBoxTexWidth, SkyBoxTexHeight;
+	lodepng::decode(SkyBoxTexture, SkyBoxTexWidth, SkyBoxTexHeight, "../models/SkyBox/SkyBoxTexture1.png");
 
-	//FlooringTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.4f, 3.0f));
-	//drawMesh(imageBuffer, zBuffer, FlooringMesh, FlooringTexture, FlooringTexWidth, FlooringTexHeight, FlooringTransform, worldToClip, lights, width, height);
+	SkyBoxTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, SkyBoxMesh, SkyBoxTexture, SkyBoxTexWidth, SkyBoxTexHeight, SkyBoxTransform, worldToClip, lights, width, height);
 
-	//std::string SmokeFilename = "../models/Smoke/Smoke.obj";
+	std::string FlooringFilename = "../models/Flooring/Flooring2.obj";
 
-	//Mesh SmokeMesh;
-	//try {
-	//	SmokeMesh = loadMeshFile(SmokeFilename);
-	//	std::cout << "Successfully loaded model: " << SmokeFilename << std::endl;
-	//}
-	//catch (const std::exception& e) {
-	//	std::cerr << "Failed to load model: " << SmokeFilename << "\nReason: " << e.what() << std::endl;
-	//}
+	Mesh FlooringMesh;
+	try {
+		FlooringMesh = loadMeshFile(FlooringFilename);
+		std::cout << "Successfully loaded model: " << FlooringFilename << std::endl;
+	}
+	catch (const std::exception& e) {
+		std::cerr << "Failed to load model: " << FlooringFilename << "\nReason: " << e.what() << std::endl;
+	}
 
-	//Eigen::Matrix4f SmokeTransform;
+	Eigen::Matrix4f FlooringTransform;
 
-	//std::vector<uint8_t> SmokeTexture;
-	//unsigned int SmokeTexWidth, SmokeTexHeight;
-	//lodepng::decode(SmokeTexture, SmokeTexWidth, SmokeTexHeight, "../models/Smoke/SmokeTexture.png");
+	std::vector<uint8_t> FlooringTexture;
+	unsigned int FlooringTexWidth, FlooringTexHeight;
+	lodepng::decode(FlooringTexture, FlooringTexWidth, FlooringTexHeight, "../models/Flooring/FlooringTexture.png");
 
-	//SmokeTransform = translationMatrix(Eigen::Vector3f(0.0f, -1.0f, 3.5f)) * rotateXMatrix(M_PI) * scaleMatrix(0.3);
-	//drawMesh(imageBuffer, zBuffer, SmokeMesh, SmokeTexture, SmokeTexWidth, SmokeTexHeight, SmokeTransform, worldToClip, lights, width, height);
+	FlooringTransform = translationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f));
+	drawMesh(imageBuffer, zBuffer, FlooringMesh, FlooringTexture, FlooringTexWidth, FlooringTexHeight, FlooringTransform, worldToClip, lights, width, height);
 
-	//for (const auto& vertex : roadMesh.verts) {
-	//	Eigen::Vector4f transformedVertex = roadTransform * Eigen::Vector4f(vertex.x(), vertex.y(), vertex.z(), 1.0f);
-	//	std::cout << "Transformed Vertex: " << transformedVertex.transpose() << std::endl;
-	//}
+	for (const auto& vertex : SkyBoxMesh.verts) {
+		Eigen::Vector4f transformedVertex = SkyBoxTransform * Eigen::Vector4f(vertex.x(), vertex.y(), vertex.z(), 1.0f);
+		std::cout << "Transformed Vertex: " << transformedVertex.transpose() << std::endl;
+	}
+
 
 	// For debug - draw point lights as colored circles so we can see where they are
 	drawPointLights(imageBuffer, width, height, lights);

@@ -1,0 +1,234 @@
+# Blender 4.1.0 MTL File: 'OBJ_Scene.blend'
+# www.blender.org
+
+newmtl CarbonFiber3Mtl.002
+Ns 0.000000
+Ka 0.500000 0.500000 0.500000
+Kd 0.000638 0.254916 0.632043
+Ks 0.117186 0.117186 0.117186
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+
+newmtl Meshpart10Mtl.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.062745 0.062745 0.062745
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart10_diff.png
+map_d D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart10_diff.png
+
+newmtl Meshpart12Mtl.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.062745 0.062745 0.062745
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart12_diff.png
+map_d D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart12_diff.png
+
+newmtl Meshpart16Mtl.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.103634 0.108711 0.141980
+Ks 0.046780 0.046780 0.046780
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Meshpart17Mtl.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.062745 0.062745 0.062745
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart17_diff.png
+map_d D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart17_diff.png
+
+newmtl Meshpart18Mtl.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.007155 0.018913 0.031551
+Ks 0.001205 0.001205 0.001205
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 0.301961
+illum 9
+
+newmtl Meshpart19Mtl.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.002932 0.002932 0.002932
+Ks 0.001161 0.001161 0.001161
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Meshpart1Mtl.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.353741 0.363604 0.420508
+Ks 0.023798 0.023798 0.023798
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Meshpart21Mtl.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.002586 0.002586 0.002586
+Ks 0.000162 0.000162 0.000162
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Meshpart23Mtl.002
+Ka 1.000000 1.000000 1.000000
+Ks 0.000112 0.000112 0.000112
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart23_diff.png
+map_Ns D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart23_spec.png
+map_d D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart23_diff.png
+map_Bump D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart23_nmap.png
+
+newmtl Meshpart34Mtl.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.062745 0.062745 0.062745
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart34_diff.png
+map_d D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart34_diff.png
+
+newmtl Meshpart37Mtl.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.062745 0.062745 0.062745
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart37_diff.png
+map_d D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart37_diff.png
+
+newmtl Meshpart39Mtl.002
+Ka 1.000000 1.000000 1.000000
+Ks 0.817496 0.817496 0.817496
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart39_diff.png
+map_Ns D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart39_spec.png
+map_d D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart39_diff.png
+map_Bump D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart39_nmap.png
+
+newmtl Meshpart3Mtl.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.062745 0.062745 0.062745
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart3_diff.png
+map_d D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart3_diff.png
+
+newmtl Meshpart40Mtl.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.002586 0.002586 0.002586
+Ks 0.001024 0.001024 0.001024
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Meshpart4Mtl.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.062745 0.062745 0.062745
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart4_diff.png
+map_d D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart4_diff.png
+
+newmtl Meshpart5Mtl.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.940601 0.940601 0.940601
+Ks 0.084839 0.084839 0.084839
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl Meshpart6Mtl.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.062745 0.062745 0.062745
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart6_diff.png
+map_d D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart6_diff.png
+
+newmtl Meshpart7Mtl.002
+Ns 0.000000
+Ka 0.500000 0.500000 0.500000
+Ks 0.062745 0.062745 0.062745
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart7_diff.png
+map_d D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart7_diff.png
+
+newmtl Meshpart8Mtl.002
+Ns 0.000000
+Ka 0.500000 0.500000 0.500000
+Kd 0.013473 0.013473 0.013473
+Ks 0.005337 0.005337 0.005337
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+
+newmtl Meshpart9Mtl.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.618686 0.618686 0.618686
+Ks 0.245048 0.245048 0.245048
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl R1Mtl.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.180144 0.000000 0.000000
+Ks 0.023784 0.023784 0.023784
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl RightDoor1Mtl.002
+Ns 0.000000
+Ka 0.500000 0.500000 0.500000
+Kd 0.012664 0.017936 0.026549
+Ks 0.007545 0.007545 0.007545
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
