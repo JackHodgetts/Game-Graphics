@@ -234,52 +234,6 @@ void drawTriangle(std::vector<uint8_t>& image, int width, int height,
 		}
 }
 
-void downsampleImage(const std::vector<unsigned char>& tempImage,
-	std::vector<unsigned char>& image,
-	std::vector<float>& tempZBuffer,
-	std::vector<float>& zBuffer,
-	int width, int height)
-{
-	for (int y = 0; y < height; ++y) {
-		for (int x = 0; x < width; ++x) {
-			// Calculate the corresponding region in the high-resolution image (4 pixels per target pixel)
-			int highResX = x * 2;
-			int highResY = y * 2;
-
-			// Average the colors from the 4 surrounding high-resolution pixels
-			Eigen::Vector3f avgColor(0.0f, 0.0f, 0.0f);
-			float minDepth = std::numeric_limits<float>::infinity();
-
-			for (int dy = 0; dy < 2; ++dy) {
-				for (int dx = 0; dx < 2; ++dx) {
-					int idx = ((highResY + dy) * width * 2 + (highResX + dx)) * 4;
-					avgColor += Eigen::Vector3f(
-						tempImage[idx] / 255.0f,
-						tempImage[idx + 1] / 255.0f,
-						tempImage[idx + 2] / 255.0f
-					);
-
-					// Track the minimum depth value for the 4 surrounding pixels
-					int zIdx = (highResY + dy) * width * 2 + (highResX + dx);
-					minDepth = std::min(minDepth, tempZBuffer[zIdx]);
-				}
-			}
-
-			avgColor /= 4.0f;
-
-			// Set the final pixel color
-			int finalIdx = (y * width + x) * 4;
-			image[finalIdx] = static_cast<unsigned char>(std::min(avgColor.x() * 255, 255.0f));
-			image[finalIdx + 1] = static_cast<unsigned char>(std::min(avgColor.y() * 255, 255.0f));
-			image[finalIdx + 2] = static_cast<unsigned char>(std::min(avgColor.z() * 255, 255.0f));
-			image[finalIdx + 3] = 255;  // Fully opaque
-
-			// Downsample the z-buffer (use the minimum depth of the 4 surrounding pixels)
-			zBuffer[y * width + x] = minDepth;
-		}
-	}
-}
-
 void drawMesh(std::vector<unsigned char>& image,
 	std::vector<float>& zBuffer,
 	const Mesh& mesh,
@@ -372,15 +326,9 @@ void drawMesh(std::vector<unsigned char>& image,
 			t.texs[1] = mesh.texs[mesh.tFaces[i][1]];
 			t.texs[2] = mesh.texs[mesh.tFaces[i][2]];
 
-			// Now draw to this temporary high-res buffer
-			for (int i = 0; i < mesh.vFaces.size(); ++i) {
-				// Your current logic to draw triangles
 
-				// Make sure the triangle is drawn using the correct screen space for high res
-				drawTriangle(tempImage, renderWidth, renderHeight, tempZBuffer, t, lights, albedoTexture, texWidth, texHeight);
-			}
 
-			downsampleImage(tempImage, image, tempZBuffer, zBuffer, width, height);
+			drawTriangle(image, width, height, zBuffer, t, lights, albedoTexture, texWidth, texHeight);
 		}
 	}
 }
