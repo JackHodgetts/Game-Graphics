@@ -1,0 +1,12 @@
+# Blender 4.1.0 MTL File: 'OBJ_Scene.blend'
+# www.blender.org
+
+newmtl Meshpart7Mtl.002
+Ns 0.000000
+Ka 0.500000 0.500000 0.500000
+Ks 0.062745 0.062745 0.062745
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 3
+map_Kd D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart7_diff.png
+map_d D:/GameGraphics/bugatti-divo/source/2020 Bugatti Divo/Meshpart7_diff.png
