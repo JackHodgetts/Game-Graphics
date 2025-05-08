@@ -228,34 +228,34 @@ int main(int argc, char* argv[]) {
 	LambertianShader lavenderLambertianShader(lavender);
 	/*TexturedPhongShader spotShader(&spotTexture, width, height, 100, Eigen::Vector3f(1.f, 1.f, 1.f));*/
 	//TexturedPhongShader roadShader(&roadTexture, width, height, 100, Eigen::Vector3f(1.f, 1.f, 1.f));
-	TexturedLambertianShader RoadShader(&roadTexture, roadTexWidth, roadTexHeight);
-	TexturedLambertianShader SideHillShader(&sideHillTexture, sideHillTexWidth, sideHillTexHeight);
-	TexturedLambertianShader CliffHillShader(&CliffHillTexture, CliffHillTexWidth, CliffHillTexHeight);
-	TexturedLambertianShader BackgroundHillShader(&BackgroundHillTexture, BackgroundHillTexWidth, BackgroundHillTexHeight);
+	TexturedLambertianShader RoadShader(&roadTexture, roadTexWidth, roadTexHeight, 1.0f);
+	TexturedLambertianShader SideHillShader(&sideHillTexture, sideHillTexWidth, sideHillTexHeight, 1.0f);
+	TexturedLambertianShader CliffHillShader(&CliffHillTexture, CliffHillTexWidth, CliffHillTexHeight, 1.0f);
+	TexturedLambertianShader BackgroundHillShader(&BackgroundHillTexture, BackgroundHillTexWidth, BackgroundHillTexHeight, 1.0f);
 	TexturedPhongShader CarBodyShader(&CarBodyTexture, CarBodyTexWidth, CarBodyTexHeight, 100, Eigen::Vector3f(1.f, 1., 1.f));
-	TexturedLambertianShader CarTireShader(&CarTireTexture, CarTireTexWidth, CarTireTexHeight);
-	TexturedLambertianShader CarBadgeShader(&CarBadgeTexture, CarBadgeTexWidth, CarBadgeTexHeight);
+	TexturedLambertianShader CarTireShader(&CarTireTexture, CarTireTexWidth, CarTireTexHeight, 1.0f);
+	TexturedLambertianShader CarBadgeShader(&CarBadgeTexture, CarBadgeTexWidth, CarBadgeTexHeight, 1.0f);
 	TexturedPhongShader CarRimsShader(&CarRimsTexture, CarRimsTexWidth, CarRimsTexHeight, 100, Eigen::Vector3f(1.f, 1., 1.f));
-	TexturedLambertianShader CarMirrorShader(&CarMirrorTexture, CarMirrorTexWidth, CarMirrorTexHeight);
-	TexturedLambertianShader CliffGrassShader(&CliffGrassTexture, CliffGrassTexWidth, CliffGrassTexHeight);
-	TexturedLambertianShader CliffPostShader(&CliffPostTexture, CliffPostTexWidth, CliffPostTexHeight);
-	TexturedLambertianShader CliffRocksShader(&CliffRocksTexture, CliffRocksTexWidth, CliffRocksTexHeight);
-	TexturedLambertianShader AutumnTreesShader(&AutumnTreesTexture, AutumnTreesTexWidth, AutumnTreesTexHeight);
-	TexturedLambertianShader AutumnLeavesShader(&AutumnLeavesTexture, AutumnLeavesTexWidth, AutumnLeavesTexHeight);
-	TexturedLambertianShader BackgroundLeavesShader(&BackgroundLeavesTexture, BackgroundLeavesTexWidth, BackgroundLeavesTexHeight);
-	TexturedLambertianShader BackgroundPostShader(&BackgroundPostTexture, BackgroundPostTexWidth, BackgroundPostTexHeight);
-	TexturedLambertianShader Backgroundrock_HShader(&BackgroundRocks_HTexture, BackgroundRocks_HTexWidth, BackgroundRocks_HTexHeight);
-	TexturedLambertianShader BackgroundRocksShader(&BackgroundRocksTexture, BackgroundRocksTexWidth, BackgroundRocksTexHeight);
-	TexturedLambertianShader FloorLeavesShader(&FloorLeavesTexture, FloorLeavesTexWidth, FloorLeavesTexHeight);
-	TexturedLambertianShader NormalTreesShader(&NormalTreesTexture, NormalTreesTexWidth, NormalTreesTexHeight);
-	TexturedLambertianShader NormalLeavesShader(&NormalLeavesTexture, NormalLeavesTexWidth, NormalLeavesTexHeight);
-	TexturedLambertianShader SideHill_GrassShader(&SideHill_GrassTexture, SideHill_GrassTexWidth, SideHill_GrassTexHeight);
-	TexturedLambertianShader SideHill_LeavesShader(&SideHill_LeavesTexture, SideHill_LeavesTexWidth, SideHill_LeavesTexHeight);
-	TexturedLambertianShader SideHill_RockShader(&SideHill_RockTexture, SideHill_RockTexWidth, SideHill_RockTexHeight);
-	TexturedLambertianShader SignShader(&SignTexture, SignTexWidth, SignTexHeight);
-	TexturedLambertianShader SignLegsShader(&SignLegsTexture, SignLegsTexWidth, SignLegsTexHeight);
-	TexturedLambertianShader SkyBoxShader(&SkyBoxTexture, SkyBoxTexWidth, SkyBoxTexHeight);
-	TexturedLambertianShader FlooringShader(&FlooringTexture, FlooringTexWidth, FlooringTexHeight);
+	TexturedLambertianShader CarMirrorShader(&CarMirrorTexture, CarMirrorTexWidth, CarMirrorTexHeight, 1.0f);
+	TexturedLambertianShader CliffGrassShader(&CliffGrassTexture, CliffGrassTexWidth, CliffGrassTexHeight, 0.0f);
+	TexturedLambertianShader CliffPostShader(&CliffPostTexture, CliffPostTexWidth, CliffPostTexHeight, 1.0f);
+	TexturedLambertianShader CliffRocksShader(&CliffRocksTexture, CliffRocksTexWidth, CliffRocksTexHeight, 1.0f);
+	TexturedLambertianShader AutumnTreesShader(&AutumnTreesTexture, AutumnTreesTexWidth, AutumnTreesTexHeight, 0.5f);
+	TexturedLambertianShader AutumnLeavesShader(&AutumnLeavesTexture, AutumnLeavesTexWidth, AutumnLeavesTexHeight, 0.5f);
+	TexturedLambertianShader BackgroundLeavesShader(&BackgroundLeavesTexture, BackgroundLeavesTexWidth, BackgroundLeavesTexHeight, 0.0f);
+	TexturedLambertianShader BackgroundPostShader(&BackgroundPostTexture, BackgroundPostTexWidth, BackgroundPostTexHeight, 1.0f);
+	TexturedLambertianShader Backgroundrock_HShader(&BackgroundRocks_HTexture, BackgroundRocks_HTexWidth, BackgroundRocks_HTexHeight, 1.0f);
+	TexturedLambertianShader BackgroundRocksShader(&BackgroundRocksTexture, BackgroundRocksTexWidth, BackgroundRocksTexHeight, 1.0f);
+	TexturedLambertianShader FloorLeavesShader(&FloorLeavesTexture, FloorLeavesTexWidth, FloorLeavesTexHeight, 0.0f);
+	TexturedLambertianShader NormalTreesShader(&NormalTreesTexture, NormalTreesTexWidth, NormalTreesTexHeight, 0.0f);
+	TexturedLambertianShader NormalLeavesShader(&NormalLeavesTexture, NormalLeavesTexWidth, NormalLeavesTexHeight, 0.0f);
+	TexturedLambertianShader SideHill_GrassShader(&SideHill_GrassTexture, SideHill_GrassTexWidth, SideHill_GrassTexHeight, 0.0f);
+	TexturedLambertianShader SideHill_LeavesShader(&SideHill_LeavesTexture, SideHill_LeavesTexWidth, SideHill_LeavesTexHeight, 0.0f);
+	TexturedLambertianShader SideHill_RockShader(&SideHill_RockTexture, SideHill_RockTexWidth, SideHill_RockTexHeight, 1.0f);
+	TexturedLambertianShader SignShader(&SignTexture, SignTexWidth, SignTexHeight, 1.0f);
+	TexturedLambertianShader SignLegsShader(&SignLegsTexture, SignLegsTexWidth, SignLegsTexHeight, 1.0f);
+	TexturedLambertianShader SkyBoxShader(&SkyBoxTexture, SkyBoxTexWidth, SkyBoxTexHeight, 1.0f);
+	TexturedLambertianShader FlooringShader(&FlooringTexture, FlooringTexWidth, FlooringTexHeight, 1.0f);
 
 	MirrorShader mirrorShader;
 	TexCoordTestShader texCoordTestShader;
@@ -335,13 +335,13 @@ int main(int argc, char* argv[]) {
 	scene.renderables.push_back(std::make_shared<BVHNode>(NormalLeavesModel, &NormalLeavesShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f))* rotateZ(M_PI)));
 	
 	Model SideHill_GrassModel("../models/SideHill_Grass/SideHill_Grass.obj");
-	scene.renderables.push_back(std::make_shared<BVHNode>(SideHill_GrassModel, &SideHill_GrassShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, -0.1f, 3.0f)) * rotateY(180.0f)));
+	scene.renderables.push_back(std::make_shared<BVHNode>(SideHill_GrassModel, &SideHill_GrassShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f))* rotateZ(M_PI)));
 
 	Model SideHill_LeavesModel("../models/SideHill_Leaves/SideHill_Leaves.obj");
-	scene.renderables.push_back(std::make_shared<BVHNode>(SideHill_LeavesModel, &SideHill_LeavesShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, -0.3f, 3.0f))* rotateY(180.0f)));
+	scene.renderables.push_back(std::make_shared<BVHNode>(SideHill_LeavesModel, &SideHill_LeavesShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f))* rotateZ(M_PI)));
 
 	Model SideHill_RockModel("../models/SideHill_Rock/SideHill_Rock.obj");
-	scene.renderables.push_back(std::make_shared<BVHNode>(SideHill_RockModel, &SideHill_RockShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, -0.3f, 3.0f))* rotateY(180.0f)));
+	scene.renderables.push_back(std::make_shared<BVHNode>(SideHill_RockModel, &SideHill_RockShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f))* rotateZ(M_PI)));
 
 	Model SignModel("../models/Sign/Sign.obj");
 	scene.renderables.push_back(std::make_shared<BVHNode>(SignModel, &SignShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f))* rotateZ(M_PI)));
@@ -350,10 +350,10 @@ int main(int argc, char* argv[]) {
 	scene.renderables.push_back(std::make_shared<BVHNode>(SignLegsModel, &SignLegsShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f))* rotateZ(M_PI)));
 
 	Model SkyboxModel("../models/SkyBox/SkyBox.obj");
-	scene.renderables.push_back(std::make_shared<BVHNode>(SkyboxModel, &SkyBoxShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, -0.4f, 3.0f))));
+	scene.renderables.push_back(std::make_shared<BVHNode>(SkyboxModel, &SkyBoxShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 4.0f))* rotateZ(M_PI)));
 
 	Model FlooringModel("../models/Flooring/Flooring.obj");
-	scene.renderables.push_back(std::make_shared<BVHNode>(FlooringModel, &FlooringShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.6f, 3.0f))* rotateZ(M_PI)));
+	scene.renderables.push_back(std::make_shared<BVHNode>(FlooringModel, &FlooringShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, -0.2f, 3.0f))* rotateZ(M_PI)));
 
 	// *** Add lights to scene ***
 	Eigen::Vector3f ambientLight(.9f, .9f, .9f);
@@ -388,35 +388,65 @@ int main(int argc, char* argv[]) {
 		for (int x = 0; x < pixWidth; ++x) {
 			Ray ray = cam.getRay(x, scanlines[y]);
 			HitInfo hitInfo;
+
+			Eigen::Vector3f finalColor(0, 0, 0);
+
 			if (scene.intersect(ray, 1e-6f, 1e6f, hitInfo, VISIBLE_BITMASK)) {
-				Eigen::Vector3f color = hitInfo.shader->getColor(
+				Eigen::Vector3f foregroundColor = hitInfo.shader->getColor(
 					hitInfo, &scene,
 					lightSources, ambientLight,
 					0, config["maxBounces"]);
 
-				color.x() = std::min(color.x(), 1.f);
-				color.y() = std::min(color.y(), 1.f);
-				color.z() = std::min(color.z(), 1.f);
+				foregroundColor = foregroundColor.cwiseMin(1.0f);
+				float alpha = hitInfo.shader->getAlpha(hitInfo);  // fixed function name
 
+				if (alpha < 1.0f) {
+					// Cast background ray from just beyond the surface
+					Ray backgroundRay = ray;
+					backgroundRay.origin = hitInfo.location + ray.direction * 1e-4f;
+
+					HitInfo bghitInfo;
+					Eigen::Vector3f backgroundColor(0.0f, 0.0f, 0.2f); // default background
+
+					if (scene.intersect(backgroundRay, 1e-6f, 1e6f, bghitInfo, VISIBLE_BITMASK)) {
+						backgroundColor = bghitInfo.shader->getColor(
+							bghitInfo, &scene,
+							lightSources, ambientLight,
+							0, config["maxBounces"]);
+					}
+
+					finalColor = alpha * foregroundColor + (1.0f - alpha) * backgroundColor;
+				}
+				else {
+					finalColor = foregroundColor;
+				}
+
+				finalColor = finalColor.cwiseMin(1.0f);
 
 				int line = (pixHeight - scanlines[y]) - 1;
-				outImage[(x + line * pixWidth) * nChannels + 0] = color.x() * 255;
-				outImage[(x + line * pixWidth) * nChannels + 1] = color.y() * 255;
-				outImage[(x + line * pixWidth) * nChannels + 2] = color.z() * 255;
-				outImage[(x + line * pixWidth) * nChannels + 3] = 255;
+				int flippedX = pixWidth - x - 1;
+				int pixelIndex = (flippedX + line * pixWidth) * nChannels;
+
+				outImage[pixelIndex + 0] = static_cast<uint8_t>(finalColor.x() * 255);
+				outImage[pixelIndex + 1] = static_cast<uint8_t>(finalColor.y() * 255);
+				outImage[pixelIndex + 2] = static_cast<uint8_t>(finalColor.z() * 255);
+				outImage[pixelIndex + 3] = static_cast<uint8_t>(alpha * 255);  // optional
 			}
 			else {
+				// background (no intersection)
 				int line = (pixHeight - scanlines[y]) - 1;
-				outImage[(x + line * pixWidth) * nChannels + 0] = 0;
-				outImage[(x + line * pixWidth) * nChannels + 1] = 0;
-				outImage[(x + line * pixWidth) * nChannels + 2] = 0;
-				outImage[(x + line * pixWidth) * nChannels + 3] = 255;
+				int flippedX = pixWidth - x - 1;
+				int pixelIndex = (flippedX + line * pixWidth) * nChannels;
+
+				outImage[pixelIndex + 0] = 0;
+				outImage[pixelIndex + 1] = 0;
+				outImage[pixelIndex + 2] = 50;
+				outImage[pixelIndex + 3] = 255;
+			}
+			if (omp_get_thread_num() == omp_get_num_threads() - 1) {
+				std::clog << "\rScanlines remaining: " << (pixHeight - y) << ' ' << std::flush;
 			}
 		}
-		if (omp_get_thread_num() == omp_get_num_threads()-1) {
-			std::clog << "\rScanlines remaining: " << (pixHeight - y) << ' ' << std::flush;
-		}
-
 	}
 
 	auto renderTime = std::chrono::steady_clock::now() - startTime;

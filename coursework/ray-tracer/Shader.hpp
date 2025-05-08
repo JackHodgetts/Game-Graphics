@@ -19,5 +19,9 @@ public:
 		const Eigen::Vector3f& ambientLight,
 		int currBounceCount,
 		const int maxBounces) const = 0;
+
+	virtual float getAlpha(const HitInfo& hitInfo) const {
+		return 1.0f;
+	}
 };
 

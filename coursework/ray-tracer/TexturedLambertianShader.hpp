@@ -11,10 +11,11 @@ private:
 	const std::vector<uint8_t>* albedoTexture_;
 	const int texWidth_, texHeight_;
 	bool shadowTest_;
+	float transpancy_;
 public:
-	TexturedLambertianShader(const std::vector<uint8_t>* albedoTexture, int texWidth, int texHeight, bool shadowTest=true)
+	TexturedLambertianShader(const std::vector<uint8_t>* albedoTexture, int texWidth, int texHeight, float transpancy, bool shadowTest=true)
 		:shadowTest_(shadowTest), albedoTexture_(albedoTexture),
-		texWidth_(texWidth), texHeight_(texHeight)
+		texWidth_(texWidth), texHeight_(texHeight), transpancy_(transpancy)
 	{}
 
 	virtual Eigen::Vector3f getColor(const HitInfo& hitInfo, 
@@ -38,6 +39,8 @@ public:
 		albedo.y() = static_cast<float>((*albedoTexture_)[(pixX + texWidth_*pixY)*4 + 1]) / 255.f;
 		albedo.z() = static_cast<float>((*albedoTexture_)[(pixX + texWidth_*pixY)*4 + 2]) / 255.f;
 
+		float aplha = static_cast<float>((*albedoTexture_)[(pixX + texWidth_ * pixY) * 4 + 3]) / 255.f;
+
 		Eigen::Vector3f color = coefftWiseMul(albedo, ambientLight);
 
 		for (auto& light : lights) {
@@ -51,6 +54,18 @@ public:
 		}
 
 		return color;
+	}
+
+	virtual float getAlpha(const HitInfo& hitInfo) const override {
+		Eigen::Vector2f tex = hitInfo.texCoords;
+		int pixX = static_cast<int>(tex.x() * texWidth_);
+		int pixY = static_cast<int>((1.f - tex.y()) * texHeight_);
+		pixX = std::max(0, std::min(pixX, texWidth_ - 1));
+		pixY = std::max(0, std::min(pixY, texHeight_ - 1));
+
+		// Read alpha from the texture's alpha channel (assuming 4 bytes per pixel: RGBA)
+		float alpha = static_cast<float>((*albedoTexture_)[(pixX + texWidth_ * pixY) * 4 + 3]) / 255.0f;
+		return alpha;
 	}
 };
 
