@@ -65,15 +65,198 @@ int main(int argc, char* argv[]) {
 		lavender(178.f / 255.f, 164.f / 255.f, 212.f / 255.f);
 
 	// *** Load shaders and textures ***
-	std::vector<uint8_t> spotTexture;
-	unsigned int width, height;
-	lodepng::decode(spotTexture, width, height, "../models/spot.png");
+	//std::vector<uint8_t> spotTexture;
+	//unsigned int width, height;
+	//lodepng::decode(spotTexture, width, height, "../models/spot.png");
+
+	std::vector<uint8_t> roadTexture;
+	unsigned int roadTexWidth, roadTexHeight;
+	lodepng::decode(roadTexture, roadTexWidth, roadTexHeight, "../models/Road/RoadTexture.png");
+
+	std::vector<uint8_t> sideHillTexture;
+	unsigned int sideHillTexWidth, sideHillTexHeight;
+	lodepng::decode(sideHillTexture, sideHillTexWidth, sideHillTexHeight, "../models/SideHill/SideHillTexture.png");
+
+	std::vector<uint8_t> CliffHillTexture;
+	unsigned int CliffHillTexWidth, CliffHillTexHeight;
+	lodepng::decode(CliffHillTexture, CliffHillTexWidth, CliffHillTexHeight, "../models/CliffHill/CliffHillTexture.png");
+
+	std::vector<uint8_t> AutumnTreesTexture;
+	unsigned int AutumnTreesTexWidth, AutumnTreesTexHeight;
+	lodepng::decode(AutumnTreesTexture, AutumnTreesTexWidth, AutumnTreesTexHeight, "../models/AutumnTrees/AutumnTreesTexture.png");
+
+	std::vector<uint8_t> AutumnLeavesTexture;
+	unsigned int AutumnLeavesTexWidth, AutumnLeavesTexHeight;
+	lodepng::decode(AutumnLeavesTexture, AutumnLeavesTexWidth, AutumnLeavesTexHeight, "../models/AutumnLeaves/AutumnLeavesTexture.png");
+
+	std::vector<uint8_t> BackgroundHillTexture;
+	unsigned int BackgroundHillTexWidth, BackgroundHillTexHeight;
+	lodepng::decode(BackgroundHillTexture, BackgroundHillTexWidth, BackgroundHillTexHeight, "../models/BackgroundHill/BackgroundHillTexture.png");
+
+	std::vector<uint8_t> BackgroundLeavesTexture;
+	unsigned int BackgroundLeavesTexWidth, BackgroundLeavesTexHeight;
+	lodepng::decode(BackgroundLeavesTexture, BackgroundLeavesTexWidth, BackgroundLeavesTexHeight, "../models/BackgroundLeaves/BackgroundLeavesTexture.png");
+
+	std::vector<uint8_t> BackgroundPostTexture;
+	unsigned int BackgroundPostTexWidth, BackgroundPostTexHeight;
+	lodepng::decode(BackgroundPostTexture, BackgroundPostTexWidth, BackgroundPostTexHeight, "../models/BackgroundPost/BackgroundPostTexture.png");
+
+	std::vector<uint8_t> BackgroundRocks_HTexture;
+	unsigned int BackgroundRocks_HTexWidth, BackgroundRocks_HTexHeight;
+	lodepng::decode(BackgroundRocks_HTexture, BackgroundRocks_HTexWidth, BackgroundRocks_HTexHeight, "../models/Backgroundrock_H/BackgroundRocks_HTexture.png");
+
+	std::vector<uint8_t> BackgroundRocksTexture;
+	unsigned int BackgroundRocksTexWidth, BackgroundRocksTexHeight;
+	lodepng::decode(BackgroundRocksTexture, BackgroundRocksTexWidth, BackgroundRocksTexHeight, "../models/BackgroundRocks/BackgroundRocksTexture.png");
+
+	std::vector<uint8_t>  CarBodyTexture;
+	unsigned int CarBodyTexWidth, CarBodyTexHeight;
+	lodepng::decode(CarBodyTexture, CarBodyTexWidth, CarBodyTexHeight, "../models/CarBody/CarBodyTexture.png");
+
+	std::vector<uint8_t> CarTireTexture;
+	unsigned int CarTireTexWidth, CarTireTexHeight;
+	lodepng::decode(CarTireTexture, CarTireTexWidth, CarTireTexHeight, "../models/CarTire/CarTireTexture.png");
+
+	std::vector<uint8_t> CarBadgeTexture;
+	unsigned int  CarBadgeTexWidth, CarBadgeTexHeight;
+	lodepng::decode(CarBadgeTexture, CarBadgeTexWidth, CarBadgeTexHeight, "../models/CarBadge/CarBadgeTexture.png");
+
+	std::vector<uint8_t>CarRimsTexture;
+	unsigned int  CarRimsTexWidth, CarRimsTexHeight;
+	lodepng::decode(CarRimsTexture, CarRimsTexWidth, CarRimsTexHeight, "../models/CarRims/CarRimsTexture.png");
+
+	std::vector<uint8_t>CarMirrorTexture;
+	unsigned int  CarMirrorTexWidth, CarMirrorTexHeight;
+	lodepng::decode(CarMirrorTexture, CarMirrorTexWidth, CarMirrorTexHeight, "../models/CarMirror/CarMirrorTexture.png");
+
+	std::vector<uint8_t> CarWindowTexture;
+	unsigned int  CarWindowTexWidth, CarWindowTexHeight;
+	lodepng::decode(CarWindowTexture, CarWindowTexWidth, CarWindowTexHeight, "../models/CarWindow/CarWindowTexture.png");
+
+	std::vector<uint8_t> CliffGrassTexture;
+	unsigned int CliffGrassTexWidth, CliffGrassTexHeight;
+	lodepng::decode(CliffGrassTexture, CliffGrassTexWidth, CliffGrassTexHeight, "../models/CliffGrass/CliffGrassTexture.png");
+
+	std::vector<uint8_t> CliffPostTexture;
+	unsigned int CliffPostTexWidth, CliffPostTexHeight;
+	lodepng::decode(CliffPostTexture, CliffPostTexWidth, CliffPostTexHeight, "../models/CliffPost/CliffPostTexture.png");
+
+	std::vector<uint8_t> CliffRocksTexture;
+	unsigned int CliffRocksTexWidth, CliffRocksTexHeight;
+	lodepng::decode(CliffRocksTexture, CliffRocksTexWidth, CliffRocksTexHeight, "../models/CliffRocks/CliffRocksTexture.png");
+
+	std::vector<uint8_t> FloorLeavesTexture;
+	unsigned int FloorLeavesTexWidth, FloorLeavesTexHeight;
+	lodepng::decode(FloorLeavesTexture, FloorLeavesTexWidth, FloorLeavesTexHeight, "../models/FloorLeaves/FloorLeavesTexture1.png");
+
+	std::vector<uint8_t> NormalTreesTexture;
+	unsigned int NormalTreesTexWidth, NormalTreesTexHeight;
+	lodepng::decode(NormalTreesTexture, NormalTreesTexWidth, NormalTreesTexHeight, "../models/NormalTrees/NormalTreesTexture.png");
+
+	std::vector<uint8_t> NormalLeavesTexture;
+	unsigned int NormalLeavesTexWidth, NormalLeavesTexHeight;
+	lodepng::decode(NormalLeavesTexture, NormalLeavesTexWidth, NormalLeavesTexHeight, "../models/NormalLeaves/NormalLeavesTexture.png");
+
+	std::vector<uint8_t> SideHill_GrassTexture;
+	unsigned int SideHill_GrassTexWidth, SideHill_GrassTexHeight;
+	lodepng::decode(SideHill_GrassTexture, SideHill_GrassTexWidth, SideHill_GrassTexHeight, "../models/SideHill_Grass/SideHillGrassTexture.png");
+
+	std::vector<uint8_t> SideHill_LeavesTexture;
+	unsigned int SideHill_LeavesTexWidth, SideHill_LeavesTexHeight;
+	lodepng::decode(SideHill_LeavesTexture, SideHill_LeavesTexWidth, SideHill_LeavesTexHeight, "../models/SideHill_Leaves/SideHillLeavesTexture.png");
+
+	std::vector<uint8_t> SideHill_RockTexture;
+	unsigned int SideHill_RockTexWidth, SideHill_RockTexHeight;
+	lodepng::decode(SideHill_RockTexture, SideHill_RockTexWidth, SideHill_RockTexHeight, "../models/SideHill_Rock/SideHill_RockTexture.png");
+
+	std::vector<uint8_t> SignTexture;
+	unsigned int SignTexWidth, SignTexHeight;
+	lodepng::decode(SignTexture, SignTexWidth, SignTexHeight, "../models/Sign/SignTexture.png");
+
+	std::vector<uint8_t> SignLegsTexture;
+	unsigned int SignLegsTexWidth, SignLegsTexHeight;
+	lodepng::decode(SignLegsTexture, SignLegsTexWidth, SignLegsTexHeight, "../models/SignLegs/SignLegsTexture.png");
+
+	std::vector<uint8_t>SkyBoxTexture;
+	unsigned int SkyBoxTexWidth, SkyBoxTexHeight;
+	lodepng::decode(SkyBoxTexture, SkyBoxTexWidth, SkyBoxTexHeight, "../models/SkyBox/SkyBoxTexture1.png");
+
+	std::vector<uint8_t> FlooringTexture;
+	unsigned int FlooringTexWidth, FlooringTexHeight;
+	lodepng::decode(FlooringTexture, FlooringTexWidth, FlooringTexHeight, "../models/Flooring/FlooringTexture.png");
+
+	unsigned error;
+	error = lodepng::decode(roadTexture, roadTexWidth, roadTexHeight, "../models/Road/RoadTexture.png");
+	if (error) {
+		std::cerr << "Error loading texture: " << lodepng_error_text(error) << std::endl;
+	}
+
+	error = lodepng::decode(sideHillTexture, sideHillTexWidth, sideHillTexHeight, "../models/SideHill/SideHillTexture.png");
+	if (error) {
+		std::cerr << "Error loading texture: " << lodepng_error_text(error) << std::endl;
+	}
+
+	error = lodepng::decode(CliffHillTexture, CliffHillTexWidth, CliffHillTexHeight, "../models/CliffHill/CliffHillTexture.png");
+	if (error) {
+		std::cerr << "Error loading texture: " << lodepng_error_text(error) << std::endl;
+	}
+
+	error = lodepng::decode(BackgroundHillTexture, BackgroundHillTexWidth, BackgroundHillTexHeight, "../models/BackgroundHill/BackgroundHillTexture.png");
+	if (error) {
+		std::cerr << "Error loading texture: " << lodepng_error_text(error) << std::endl;
+	}
+
+	if (roadTexture.empty()) {
+		std::cerr << "Road texture is empty!" << std::endl;
+	}
+
+	if (sideHillTexture.empty()) {
+		std::cerr << "Road texture is empty!" << std::endl;
+	}
+
+	if (CliffHillTexture.empty()) {
+		std::cerr << "Road texture is empty!" << std::endl;
+	}
+
+	if (BackgroundHillTexture.empty()) {
+		std::cerr << "Road texture is empty!" << std::endl;
+	}
 
 	LambertianShader redLambertianShader(red);
 	PhongShader bluePlasticShader(blue, Eigen::Vector3f(1.f, 1.f, 1.f), 100.f);
 	LambertianShader aquaLambertianShader(aqua);
 	LambertianShader lavenderLambertianShader(lavender);
-	TexturedPhongShader spotShader(&spotTexture, width, height, 100, Eigen::Vector3f(1.f, 1.f, 1.f));
+	/*TexturedPhongShader spotShader(&spotTexture, width, height, 100, Eigen::Vector3f(1.f, 1.f, 1.f));*/
+	//TexturedPhongShader roadShader(&roadTexture, width, height, 100, Eigen::Vector3f(1.f, 1.f, 1.f));
+	TexturedLambertianShader RoadShader(&roadTexture, roadTexWidth, roadTexHeight);
+	TexturedLambertianShader SideHillShader(&sideHillTexture, sideHillTexWidth, sideHillTexHeight);
+	TexturedLambertianShader CliffHillShader(&CliffHillTexture, CliffHillTexWidth, CliffHillTexHeight);
+	TexturedLambertianShader BackgroundHillShader(&BackgroundHillTexture, BackgroundHillTexWidth, BackgroundHillTexHeight);
+	TexturedPhongShader CarBodyShader(&CarBodyTexture, CarBodyTexWidth, CarBodyTexHeight, 100, Eigen::Vector3f(1.f, 1., 1.f));
+	TexturedLambertianShader CarTireShader(&CarTireTexture, CarTireTexWidth, CarTireTexHeight);
+	TexturedLambertianShader CarBadgeShader(&CarBadgeTexture, CarBadgeTexWidth, CarBadgeTexHeight);
+	TexturedPhongShader CarRimsShader(&CarRimsTexture, CarRimsTexWidth, CarRimsTexHeight, 100, Eigen::Vector3f(1.f, 1., 1.f));
+	TexturedLambertianShader CarMirrorShader(&CarMirrorTexture, CarMirrorTexWidth, CarMirrorTexHeight);
+	TexturedLambertianShader CliffGrassShader(&CliffGrassTexture, CliffGrassTexWidth, CliffGrassTexHeight);
+	TexturedLambertianShader CliffPostShader(&CliffPostTexture, CliffPostTexWidth, CliffPostTexHeight);
+	TexturedLambertianShader CliffRocksShader(&CliffRocksTexture, CliffRocksTexWidth, CliffRocksTexHeight);
+	TexturedLambertianShader AutumnTreesShader(&AutumnTreesTexture, AutumnTreesTexWidth, AutumnTreesTexHeight);
+	TexturedLambertianShader AutumnLeavesShader(&AutumnLeavesTexture, AutumnLeavesTexWidth, AutumnLeavesTexHeight);
+	TexturedLambertianShader BackgroundLeavesShader(&BackgroundLeavesTexture, BackgroundLeavesTexWidth, BackgroundLeavesTexHeight);
+	TexturedLambertianShader BackgroundPostShader(&BackgroundPostTexture, BackgroundPostTexWidth, BackgroundPostTexHeight);
+	TexturedLambertianShader Backgroundrock_HShader(&BackgroundRocks_HTexture, BackgroundRocks_HTexWidth, BackgroundRocks_HTexHeight);
+	TexturedLambertianShader BackgroundRocksShader(&BackgroundRocksTexture, BackgroundRocksTexWidth, BackgroundRocksTexHeight);
+	TexturedLambertianShader FloorLeavesShader(&FloorLeavesTexture, FloorLeavesTexWidth, FloorLeavesTexHeight);
+	TexturedLambertianShader NormalTreesShader(&NormalTreesTexture, NormalTreesTexWidth, NormalTreesTexHeight);
+	TexturedLambertianShader NormalLeavesShader(&NormalLeavesTexture, NormalLeavesTexWidth, NormalLeavesTexHeight);
+	TexturedLambertianShader SideHill_GrassShader(&SideHill_GrassTexture, SideHill_GrassTexWidth, SideHill_GrassTexHeight);
+	TexturedLambertianShader SideHill_LeavesShader(&SideHill_LeavesTexture, SideHill_LeavesTexWidth, SideHill_LeavesTexHeight);
+	TexturedLambertianShader SideHill_RockShader(&SideHill_RockTexture, SideHill_RockTexWidth, SideHill_RockTexHeight);
+	TexturedLambertianShader SignShader(&SignTexture, SignTexWidth, SignTexHeight);
+	TexturedLambertianShader SignLegsShader(&SignLegsTexture, SignLegsTexWidth, SignLegsTexHeight);
+	TexturedLambertianShader SkyBoxShader(&SkyBoxTexture, SkyBoxTexWidth, SkyBoxTexHeight);
+	TexturedLambertianShader FlooringShader(&FlooringTexture, FlooringTexWidth, FlooringTexHeight);
+
 	MirrorShader mirrorShader;
 	TexCoordTestShader texCoordTestShader;
 
@@ -82,21 +265,102 @@ int main(int argc, char* argv[]) {
 
 	// Optional code: here's how to add the spot mesh to the scene, using a BVH
 	// Try enabling this and comparing it to the non-BVH version below!
-	Model spotModel("../models/spot.obj");
-	scene.renderables.push_back(std::make_shared<BVHNode>(spotModel, &spotShader, 4, rotateY(M_PI / 4.0f)));
+	/*Model spotModel("../models/spot.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(spotModel, &spotShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 5.0f))* rotateX(M_PI) * rotateY(M_PI)));*/
 
-	// Here's how to add the mesh without using the BVH.
-	// Try comparing performance to the BVH version above.
-	//Model spotModel("../models/spot.obj");
-	//scene.renderables.push_back(std::make_shared<Mesh>(&spotShader, &spotModel));
-	//scene.renderables.back()->modelToWorld(rotateY(M_PI / 4.0f));
+	Model roadModel("../models/Road/Road.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(roadModel, &RoadShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f))));
+
+	Model SideHillModel("../models/SideHill/SideHill.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(SideHillModel, &SideHillShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f))));
+
+	Model CliffHillModel("../models/CliffHill/CliffHill.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(CliffHillModel, &CliffHillShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f))));
+
+	Model BackgroundHillModel("../models/BackgroundHill/BackgroundHill.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(BackgroundHillModel, &BackgroundHillShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f))));
+
+	Model CarBodyModel("../models/CarBody/CarBody2.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(CarBodyModel, &CarBodyShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f)) * rotateZ(M_PI)));
+
+	Model CarTiresModel("../models/CarTire/CarTire.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(CarTiresModel, &CarTireShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f)) * rotateZ(M_PI)));
+
+	Model CarBadgeModel("../models/CarBadge/CarBadge.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(CarBadgeModel, &CarBadgeShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f)) * rotateZ(M_PI)));
+
+	Model CarRimsModel("../models/CarRims/CarRims.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(CarRimsModel, &CarRimsShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f)) * rotateZ(M_PI)));
+
+	Model CarMirrorModel("../models/CarMirror/CarMirror.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(CarMirrorModel, &CarMirrorShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f)) * rotateZ(M_PI)));
+
+	Model CarWindowModel("../models/CarWindow/CarWindow.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(CarWindowModel, &mirrorShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f)) * rotateZ(M_PI)));
+
+	Model CliffGrassModel("../models/CliffGrass/CliffGrass.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(CliffGrassModel, &CliffGrassShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f)) * rotateZ(M_PI)));
+
+	Model CliffPostModel("../models/CliffPost/CliffPosts.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(CliffPostModel, &CliffPostShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f)) * rotateZ(M_PI)));
+
+	Model CliffRocksModel("../models/CliffRocks/CliffRocks.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(CliffRocksModel, &CliffRocksShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f)) * rotateZ(M_PI)));
+
+	Model AutumnTreesModel("../models/AutumnTrees/AutumnTrees.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(AutumnTreesModel, &AutumnTreesShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f)) * rotateZ(M_PI)));
+
+	Model AutumnLeavesModel("../models/AutumnLeaves/AutumnLeaves.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(AutumnLeavesModel, &AutumnLeavesShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f)) * rotateZ(M_PI)));
+
+	Model BackgroundLeavesModel("../models/BackgroundLeaves/BackgroundLeaves.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(BackgroundLeavesModel, &BackgroundLeavesShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f)) * rotateZ(M_PI)));
+
+	Model BackgroundPostModel("../models/BackgroundPost/BackgroundPost.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(BackgroundPostModel, &BackgroundPostShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f)) * rotateZ(M_PI)));
+	
+	Model Backgroundrock_HModel("../models/Backgroundrock_H/BackgroundRocks_H.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(Backgroundrock_HModel, &Backgroundrock_HShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f))* rotateZ(M_PI)));
+
+	Model BackgroundRocksModel("../models/BackgroundRocks/BackgroundRocks.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(BackgroundRocksModel, &BackgroundRocksShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f))* rotateZ(M_PI)));
+
+	Model FloorLeavesModel("../models/FloorLeaves/FloorLeaves.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(FloorLeavesModel, &FloorLeavesShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f))* rotateZ(M_PI)));
+
+	Model NormalTreesModel("../models/NormalTrees/NormalTrees.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(NormalTreesModel, &NormalTreesShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f))* rotateZ(M_PI)));
+
+	Model NormalLeavesModel("../models/NormalLeaves/NormalLeaves.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(NormalLeavesModel, &NormalLeavesShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f))* rotateZ(M_PI)));
+	
+	Model SideHill_GrassModel("../models/SideHill_Grass/SideHill_Grass.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(SideHill_GrassModel, &SideHill_GrassShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, -0.1f, 3.0f)) * rotateY(180.0f)));
+
+	Model SideHill_LeavesModel("../models/SideHill_Leaves/SideHill_Leaves.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(SideHill_LeavesModel, &SideHill_LeavesShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, -0.3f, 3.0f))* rotateY(180.0f)));
+
+	Model SideHill_RockModel("../models/SideHill_Rock/SideHill_Rock.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(SideHill_RockModel, &SideHill_RockShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, -0.3f, 3.0f))* rotateY(180.0f)));
+
+	Model SignModel("../models/Sign/Sign.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(SignModel, &SignShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f))* rotateZ(M_PI)));
+
+	Model SignLegsModel("../models/SignLegs/SignLegs.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(SignLegsModel, &SignLegsShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.0f, 3.0f))* rotateZ(M_PI)));
+
+	Model SkyboxModel("../models/SkyBox/SkyBox.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(SkyboxModel, &SkyBoxShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, -0.4f, 3.0f))));
+
+	Model FlooringModel("../models/Flooring/Flooring.obj");
+	scene.renderables.push_back(std::make_shared<BVHNode>(FlooringModel, &FlooringShader, 4, makeTranslationMatrix(Eigen::Vector3f(0.0f, 0.6f, 3.0f))* rotateZ(M_PI)));
 
 	// *** Add lights to scene ***
-	Eigen::Vector3f ambientLight(.1f, .1f, .1f);
+	Eigen::Vector3f ambientLight(.9f, .9f, .9f);
 
 	std::vector<std::unique_ptr<Light>> lightSources;
 	lightSources.push_back(std::make_unique<PointLight>(Eigen::Vector3f(-1.f, 3.f, -1.f), 3.f * Eigen::Vector3f(1.f, 1.f, 1.f)));
-	lightSources.push_back(std::make_unique<DirectionalLight>(Eigen::Vector3f(0.f, -1.f, 1.f), .5f * Eigen::Vector3f(1.f, 1.f, 1.f)));
+	lightSources.push_back(std::make_unique<DirectionalLight>(Eigen::Vector3f(0.f, 0.f, 2.f), .5f * Eigen::Vector3f(2.f, 2.f, 2.f)));
 
 	// *** Render the scene ***
 

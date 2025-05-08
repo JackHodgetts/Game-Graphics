@@ -82,4 +82,3 @@ Eigen::Vector2f Model::texCoord(int i) const {
 Eigen::Vector3f Model::normal(int i) const {
     return vns_[i];
 }
-
